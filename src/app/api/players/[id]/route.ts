@@ -1,7 +1,7 @@
-import { prisma } from '@/lib/prisma'
 import { NextResponse } from 'next/server'
+import { PlayerService } from '@/lib/services/playerService'
 
-export async function PATCH(
+export async function PUT(
   request: Request,
   { params }: { params: { id: string } }
 ) {
@@ -16,15 +16,11 @@ export async function PATCH(
       )
     }
 
-    const player = await prisma.player.update({
-      where: { id: playerId },
-      data: {
-        goals: parseInt(goals),
-        assists: parseInt(assists),
-      },
+    const updatedPlayer = await PlayerService.updatePlayer(playerId, {
+      goals: goals ? parseInt(goals) : undefined,
+      assists: assists ? parseInt(assists) : undefined
     })
-
-    return NextResponse.json(player)
+    return NextResponse.json(updatedPlayer)
   } catch (error) {
     console.error('Error updating player:', error)
     return NextResponse.json(
@@ -48,11 +44,8 @@ export async function DELETE(
       )
     }
 
-    await prisma.player.delete({
-      where: { id: playerId },
-    })
-
-    return NextResponse.json({ success: true })
+    const deletedPlayer = await PlayerService.deletePlayer(playerId)
+    return NextResponse.json(deletedPlayer)
   } catch (error) {
     console.error('Error deleting player:', error)
     return NextResponse.json(

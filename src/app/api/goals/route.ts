@@ -1,5 +1,5 @@
-import { prisma } from '@/lib/prisma'
 import { NextResponse } from 'next/server'
+import { PlayerService } from '@/lib/services/playerService'
 
 export async function POST(request: Request) {
   try {
@@ -12,16 +12,8 @@ export async function POST(request: Request) {
       )
     }
 
-    const player = await prisma.player.update({
-      where: { id: parseInt(playerId) },
-      data: {
-        goals: {
-          increment: 1,
-        },
-      },
-    })
-
-    return NextResponse.json(player)
+    const updatedPlayer = await PlayerService.addGoal(parseInt(playerId))
+    return NextResponse.json(updatedPlayer)
   } catch (error) {
     console.error('Error adding goal:', error)
     return NextResponse.json(

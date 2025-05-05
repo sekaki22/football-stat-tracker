@@ -1,13 +1,9 @@
-import { prisma } from '@/lib/prisma'
 import { NextResponse } from 'next/server'
+import { PlayerService } from '@/lib/services/playerService'
 
 export async function GET() {
   try {
-    const players = await prisma.player.findMany({
-      orderBy: {
-        goals: 'desc',
-      },
-    })
+    const players = await PlayerService.getPlayers()
     return NextResponse.json(players)
   } catch (error) {
     console.error('Error fetching players:', error)
@@ -24,24 +20,21 @@ export async function POST(request: Request) {
 
     if (!name) {
       return NextResponse.json(
-        { error: 'Player name is required' },
+        { error: 'Name is required' },
         { status: 400 }
       )
     }
 
-    const player = await prisma.player.create({
-      data: {
-        name,
-        goals: goals || 0,
-        assists: assists || 0,
-      },
-    })
-
+    const player = await PlayerService.createPlayer(
+      name,
+      goals ? parseInt(goals) : 0,
+      assists ? parseInt(assists) : 0
+    )
     return NextResponse.json(player)
   } catch (error) {
-    console.error('Error adding player:', error)
+    console.error('Error creating player:', error)
     return NextResponse.json(
-      { error: 'Failed to add player' },
+      { error: 'Failed to create player' },
       { status: 500 }
     )
   }
