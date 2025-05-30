@@ -53,4 +53,33 @@ export async function DELETE(
       { status: 500 }
     )
   }
+}
+
+export async function PATCH(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const { goals, assists } = await request.json()
+    const playerId = parseInt(params.id)
+
+    if (isNaN(playerId)) {
+      return NextResponse.json(
+        { error: 'Invalid player ID' },
+        { status: 400 }
+      )
+    }
+
+    const updatedPlayer = await PlayerService.updatePlayer(playerId, {
+      goals: goals ? parseInt(goals) : undefined,
+      assists: assists ? parseInt(assists) : undefined
+    })
+    return NextResponse.json(updatedPlayer)
+  } catch (error) {
+    console.error('Error updating player:', error)
+    return NextResponse.json(
+      { error: 'Failed to update player' },
+      { status: 500 }
+    )
+  }
 } 

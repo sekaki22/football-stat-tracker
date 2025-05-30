@@ -4,6 +4,7 @@ import { Player } from '@prisma/client'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import EditPlayerDialog from './EditPlayerDialog'
+import { useSession } from 'next-auth/react'
 
 interface PlayerListProps {
   players: Player[]
@@ -11,6 +12,7 @@ interface PlayerListProps {
 
 export default function PlayerList({ players }: PlayerListProps) {
   const router = useRouter()
+  const { data: session } = useSession()
   const [deletingId, setDeletingId] = useState<number | null>(null)
   const [editingPlayer, setEditingPlayer] = useState<Player | null>(null)
 
@@ -48,7 +50,9 @@ export default function PlayerList({ players }: PlayerListProps) {
               <th className="text-left py-2 text-gray-900 dark:text-gray-100">Player</th>
               <th className="text-right py-2 text-gray-900 dark:text-gray-100">Goals</th>
               <th className="text-right py-2 text-gray-900 dark:text-gray-100">Assists</th>
-              <th className="text-right py-2 text-gray-900 dark:text-gray-100">Actions</th>
+              {session?.user?.isAdmin && (
+                <th className="text-right py-2 text-gray-900 dark:text-gray-100">Actions</th>
+              )}
             </tr>
           </thead>
           <tbody>
@@ -57,21 +61,23 @@ export default function PlayerList({ players }: PlayerListProps) {
                 <td className="py-2 text-gray-900 dark:text-gray-100">{player.name}</td>
                 <td className="text-right py-2 text-gray-900 dark:text-gray-100">{player.goals}</td>
                 <td className="text-right py-2 text-gray-900 dark:text-gray-100">{player.assists}</td>
-                <td className="text-right py-2 space-x-2">
-                  <button
-                    onClick={() => handleEdit(player)}
-                    className="text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(player.id)}
-                    disabled={deletingId === player.id}
-                    className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 disabled:opacity-50"
-                  >
-                    {deletingId === player.id ? 'Deleting...' : 'Delete'}
-                  </button>
-                </td>
+                {session?.user?.isAdmin && (
+                  <td className="text-right py-2 space-x-2">
+                    <button
+                      onClick={() => handleEdit(player)}
+                      className="text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(player.id)}
+                      disabled={deletingId === player.id}
+                      className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 disabled:opacity-50"
+                    >
+                      {deletingId === player.id ? 'Deleting...' : 'Delete'}
+                    </button>
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>
