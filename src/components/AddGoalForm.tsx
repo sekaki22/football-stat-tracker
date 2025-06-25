@@ -7,9 +7,11 @@ import GoalMemeModal from './GoalMemeModal'
 
 interface AddGoalFormProps {
   players: Player[]
+  currentSeason: string
+  onStatAdded?: () => void
 }
 
-export default function AddGoalForm({ players }: AddGoalFormProps) {
+export default function AddGoalForm({ players, currentSeason, onStatAdded }: AddGoalFormProps) {
   const router = useRouter()
   const [selectedPlayer, setSelectedPlayer] = useState('')
   const [statType, setStatType] = useState<'goal' | 'assist'>('goal')
@@ -29,12 +31,19 @@ export default function AddGoalForm({ players }: AddGoalFormProps) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ playerId: selectedPlayer }),
+        body: JSON.stringify({ 
+          playerId: selectedPlayer,
+          season: currentSeason 
+        }),
       })
 
       if (response.ok) {
-        router.refresh()
         setSelectedPlayer('')
+        
+        // Call the callback to refresh data
+        if (onStatAdded) {
+          onStatAdded()
+        }
         
         // Show meme if it's a goal
         if (statType === 'goal') {
@@ -89,6 +98,14 @@ export default function AddGoalForm({ players }: AddGoalFormProps) {
               <option value="goal">Goal</option>
               <option value="assist">Assist</option>
             </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Season
+            </label>
+            <div className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+              {currentSeason}
+            </div>
           </div>
           <button
             type="submit"

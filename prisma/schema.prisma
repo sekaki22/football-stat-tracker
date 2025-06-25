@@ -18,10 +18,25 @@ model Player {
   name      String   @unique
   goals     Int      @default(0)
   assists   Int      @default(0)
+  season    String   @default("24/25")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   userId    String?  @unique
   user      User?    @relation(fields: [userId], references: [id])
+  seasonStats SeasonStats[]
+}
+
+model SeasonStats {
+  id        Int      @id @default(autoincrement())
+  playerId  Int
+  season    String
+  goals     Int      @default(0)
+  assists   Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  player    Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@unique([playerId, season])
 }
 
 model User {

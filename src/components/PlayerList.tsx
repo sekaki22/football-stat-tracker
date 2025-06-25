@@ -8,9 +8,11 @@ import { useSession } from 'next-auth/react'
 
 interface PlayerListProps {
   players: Player[]
+  currentSeason: string
+  onPlayerUpdated?: () => void
 }
 
-export default function PlayerList({ players }: PlayerListProps) {
+export default function PlayerList({ players, currentSeason, onPlayerUpdated }: PlayerListProps) {
   const router = useRouter()
   const { data: session } = useSession()
   const [deletingId, setDeletingId] = useState<number | null>(null)
@@ -38,7 +40,9 @@ export default function PlayerList({ players }: PlayerListProps) {
   }
 
   function handleSave(updatedPlayer: Player) {
-    router.refresh()
+    if (onPlayerUpdated) {
+      onPlayerUpdated()
+    }
   }
 
   return (
@@ -87,6 +91,7 @@ export default function PlayerList({ players }: PlayerListProps) {
       {editingPlayer && (
         <EditPlayerDialog
           player={editingPlayer}
+          currentSeason={currentSeason}
           isOpen={true}
           onClose={() => setEditingPlayer(null)}
           onSave={handleSave}

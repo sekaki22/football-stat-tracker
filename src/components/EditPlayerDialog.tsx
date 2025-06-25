@@ -5,6 +5,7 @@ import { useState } from 'react'
 
 interface EditPlayerDialogProps {
   player: Player
+  currentSeason: string
   isOpen: boolean
   onClose: () => void
   onSave: (player: Player) => void
@@ -12,6 +13,7 @@ interface EditPlayerDialogProps {
 
 export default function EditPlayerDialog({
   player,
+  currentSeason,
   isOpen,
   onClose,
   onSave,
@@ -35,6 +37,7 @@ export default function EditPlayerDialog({
         body: JSON.stringify({
           goals: parseInt(goals),
           assists: parseInt(assists),
+          season: currentSeason,
         }),
       })
 
@@ -54,7 +57,7 @@ export default function EditPlayerDialog({
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-md">
         <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">
-          Edit {player.name}
+          Edit {player.name} - Season {currentSeason}
         </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>

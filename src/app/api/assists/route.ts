@@ -3,7 +3,7 @@ import { PlayerService } from '@/lib/services/playerService'
 
 export async function POST(request: Request) {
   try {
-    const { playerId } = await request.json()
+    const { playerId, season } = await request.json()
 
     if (!playerId) {
       return NextResponse.json(
@@ -12,7 +12,14 @@ export async function POST(request: Request) {
       )
     }
 
-    const updatedPlayer = await PlayerService.addAssist(parseInt(playerId))
+    if (!season) {
+      return NextResponse.json(
+        { error: 'Season is required' },
+        { status: 400 }
+      )
+    }
+
+    const updatedPlayer = await PlayerService.addAssist(parseInt(playerId), season)
     return NextResponse.json(updatedPlayer)
   } catch (error) {
     console.error('Error adding assist:', error)

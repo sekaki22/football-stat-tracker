@@ -1,14 +1,13 @@
 import { prisma } from '@/lib/prisma'
-import PlayerList from '@/components/PlayerList'
-import PlayerStats from '@/components/PlayerStats'
-import AddGoalForm from '@/components/AddGoalForm'
-import AddPlayerForm from '@/components/AddPlayerForm'
+import SeasonWrapper from '@/components/SeasonWrapper'
 import SignInButton from '@/components/SignInButton'
 import { getServerSession } from 'next-auth'
 import { authOptions } from './api/auth/[...nextauth]/route'
 
 export default async function Home() {
   const session = await getServerSession(authOptions)
+  
+  // Get all players for initial load (24/25 season)
   const players = await prisma.player.findMany({
     orderBy: {
       goals: 'desc',
@@ -22,30 +21,7 @@ export default async function Home() {
         <SignInButton />
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div>
-          <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Top Scorers</h2>
-          <PlayerList players={players} />
-        </div>
-        
-        <div>
-          <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Player Statistics</h2>
-          <PlayerStats players={players} />
-        </div>
-      </div>
-
-      {session?.user?.isAdmin && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
-          <div>
-            <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Add Player</h2>
-            <AddPlayerForm />
-          </div>
-          <div>
-            <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Add Goal/Assist</h2>
-            <AddGoalForm players={players} />
-          </div>
-        </div>
-      )}
+      <SeasonWrapper initialPlayers={players} />
     </main>
   )
 }

@@ -14,7 +14,7 @@ A vibed Next.js application for tracking football team statistics, including goa
 
 - Next.js 15
 - TypeScript
-- Prisma (SQLite)
+- Prisma (PostgreSQL)
 - NextAuth.js
 - Tailwind CSS
 
@@ -34,6 +34,7 @@ npm install
 3. Set up environment variables:
 Create a `.env.local` file with the following variables:
 ```
+DATABASE_URL=your_postgresql_database_url
 GOOGLE_CLIENT_ID=your_google_client_id
 GOOGLE_CLIENT_SECRET=your_google_client_secret
 NEXTAUTH_URL=http://localhost:3000
@@ -52,6 +53,25 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## Deployment to Vercel
+
+1. Set up a PostgreSQL database:
+   - Create a free account on [Neon](https://neon.tech)
+   - Create a new project
+   - Copy the database connection string
+
+2. Update Google OAuth settings:
+   - Go to [Google Cloud Console](https://console.cloud.google.com)
+   - Add your Vercel domain to authorized domains
+   - Add `https://your-vercel-domain.vercel.app/api/auth/callback/google` to authorized redirect URIs
+
+3. Deploy to Vercel:
+   - Push your code to GitHub
+   - Go to [Vercel](https://vercel.com)
+   - Import your repository
+   - Add all environment variables
+   - Deploy!
 
 ## Setting up Google Authentication
 

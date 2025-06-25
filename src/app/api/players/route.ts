@@ -1,9 +1,18 @@
 import { NextResponse } from 'next/server'
 import { PlayerService } from '@/lib/services/playerService'
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const players = await PlayerService.getPlayers()
+    const { searchParams } = new URL(request.url)
+    const season = searchParams.get('season')
+    
+    let players
+    if (season) {
+      players = await PlayerService.getPlayersBySeason(season)
+    } else {
+      players = await PlayerService.getPlayers()
+    }
+    
     return NextResponse.json(players)
   } catch (error) {
     console.error('Error fetching players:', error)

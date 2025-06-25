@@ -60,7 +60,7 @@ export async function PATCH(
   { params }: { params: { id: string } }
 ) {
   try {
-    const { goals, assists } = await request.json()
+    const { goals, assists, season } = await request.json()
     const playerId = parseInt(params.id)
 
     if (isNaN(playerId)) {
@@ -70,10 +70,22 @@ export async function PATCH(
       )
     }
 
-    const updatedPlayer = await PlayerService.updatePlayer(playerId, {
-      goals: goals ? parseInt(goals) : undefined,
-      assists: assists ? parseInt(assists) : undefined
-    })
+    let updatedPlayer: any
+
+    if (season) {
+      // Update season-specific stats
+      updatedPlayer = await PlayerService.updatePlayerSeasonStats(playerId, season, {
+        goals: goals !== undefined ? parseInt(goals) : undefined,
+        assists: assists !== undefined ? parseInt(assists) : undefined
+      })
+    } else {
+      // Update main player stats (backward compatibility)
+      updatedPlayer = await PlayerService.updatePlayer(playerId, {
+        goals: goals !== undefined ? parseInt(goals) : undefined,
+        assists: assists !== undefined ? parseInt(assists) : undefined
+      })
+    }
+
     return NextResponse.json(updatedPlayer)
   } catch (error) {
     console.error('Error updating player:', error)
