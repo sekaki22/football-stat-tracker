@@ -61,6 +61,7 @@ export default function GoalMemeModal({ player, isOpen, onClose }: GoalMemeModal
           {player.name} scored!
         </p>
         <div className="relative aspect-video mb-4">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={randomGif}
             alt="Goal celebration"

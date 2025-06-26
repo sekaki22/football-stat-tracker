@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Player } from '@prisma/client'
 import PlayerList from './PlayerList'
 import PlayerStats from './PlayerStats'

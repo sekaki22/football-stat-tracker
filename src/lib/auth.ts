@@ -1,9 +1,8 @@
-import { NextAuthOptions } from "next-auth"
-import { PrismaAdapter } from "@auth/prisma-adapter"
+import { PrismaAdapter } from '@next-auth/prisma-adapter'
 import { prisma } from "@/lib/prisma"
 import GoogleProvider from "next-auth/providers/google"
 
-export const authOptions: NextAuthOptions = {
+export const authOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     GoogleProvider({
@@ -12,7 +11,7 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async signIn({ user, account, profile }) {
+    async signIn({ user }: { user: { email?: string | null } }) {
       // List of allowed email domains
       const allowedDomains = ['example.com', 'yourcompany.com']
       // Or specific email addresses

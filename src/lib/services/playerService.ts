@@ -1,6 +1,17 @@
 import { prisma } from '@/lib/prisma'
 import { Player } from '@prisma/client'
 
+// Types for raw SQL query results
+type SeasonStatsRow = {
+  playerId: number
+  goals: number
+  assists: number
+}
+
+type SeasonRow = {
+  season: string
+}
+
 export class PlayerService {
   static async getPlayers(): Promise<Player[]> {
     return prisma.player.findMany({
@@ -13,11 +24,11 @@ export class PlayerService {
     const players = await prisma.player.findMany()
     
     // Get season-specific stats for the requested season
-    const seasonStats = await prisma.$queryRaw`
+    const seasonStats = await prisma.$queryRaw<SeasonStatsRow[]>`
       SELECT playerId, goals, assists 
       FROM SeasonStats 
       WHERE season = ${season}
-    ` as any[]
+    `
 
     return players.map(player => {
       const stats = seasonStats.find(s => s.playerId === player.id)
@@ -96,11 +107,11 @@ export class PlayerService {
 
   // Get all available seasons
   static async getAvailableSeasons(): Promise<string[]> {
-    const seasons = await prisma.$queryRaw`
+    const seasons = await prisma.$queryRaw<SeasonRow[]>`
       SELECT DISTINCT season 
       FROM SeasonStats 
       ORDER BY season
-    ` as any[]
+    `
     
     return seasons.map(s => s.season)
   }

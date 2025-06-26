@@ -23,7 +23,7 @@ export default function PlayerStats({ players }: PlayerStatsProps) {
         <div>
           <h3 className="font-semibold text-gray-900 dark:text-gray-100">MVP</h3>
           <div className="space-y-1">
-            {mvps.map((mvp, index) => (
+            {mvps.map((mvp) => (
               <p key={mvp.id} className="text-gray-700 dark:text-gray-300">
                 {mvp.name} - {mvp.goals + mvp.assists} points ({mvp.goals} goals + {mvp.assists} assists)
               </p>
@@ -33,7 +33,7 @@ export default function PlayerStats({ players }: PlayerStatsProps) {
         <div>
           <h3 className="font-semibold text-gray-900 dark:text-gray-100">Top Scorers</h3>
           <div className="space-y-1">
-            {topScorers.map((scorer, index) => (
+            {topScorers.map((scorer) => (
               <p key={scorer.id} className="text-gray-700 dark:text-gray-300">
                 {scorer.name} - {scorer.goals} goals
               </p>
@@ -43,7 +43,7 @@ export default function PlayerStats({ players }: PlayerStatsProps) {
         <div>
           <h3 className="font-semibold text-gray-900 dark:text-gray-100">Top Assisters</h3>
           <div className="space-y-1">
-            {topAssisters.map((assister, index) => (
+            {topAssisters.map((assister) => (
               <p key={assister.id} className="text-gray-700 dark:text-gray-300">
                 {assister.name} - {assister.assists} assists
               </p>

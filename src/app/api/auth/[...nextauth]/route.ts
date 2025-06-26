@@ -1,14 +1,12 @@
-import { PrismaAdapter } from "@auth/prisma-adapter"
-import { prisma } from "@/lib/prisma"
-import NextAuth, { AuthOptions } from "next-auth"
-import GoogleProvider from "next-auth/providers/google"
-import { Session } from "next-auth"
-import { AdapterUser } from "next-auth/adapters"
+import NextAuth from 'next-auth'
+import GoogleProvider from 'next-auth/providers/google'
+import { PrismaAdapter } from '@next-auth/prisma-adapter'
+import { prisma } from '@/lib/prisma'
 
 // Get admin emails from environment variable
 const ADMIN_EMAILS = process.env.ADMIN_EMAILS?.split(',') || []
 
-export const authOptions: AuthOptions = {
+const handler = NextAuth({
   adapter: PrismaAdapter(prisma),
   providers: [
     GoogleProvider({
@@ -17,15 +15,14 @@ export const authOptions: AuthOptions = {
     }),
   ],
   callbacks: {
-    async session({ session, user }: { session: Session; user: AdapterUser }) {
-      if (session?.user) {
+    session: ({ session, user }) => {
+      if (session.user) {
         session.user.id = user.id
-        session.user.isAdmin = user.email ? ADMIN_EMAILS.includes(user.email) : false
+        ;(session.user as any).isAdmin = user.email ? ADMIN_EMAILS.includes(user.email) : false
       }
       return session
     },
   },
-}
+})
 
-const handler = NextAuth(authOptions)
 export { handler as GET, handler as POST } 

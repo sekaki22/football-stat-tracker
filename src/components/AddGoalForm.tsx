@@ -1,7 +1,6 @@
 'use client'
 
 import { Player } from '@prisma/client'
-import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import GoalMemeModal from './GoalMemeModal'
 
@@ -12,7 +11,6 @@ interface AddGoalFormProps {
 }
 
 export default function AddGoalForm({ players, currentSeason, onStatAdded }: AddGoalFormProps) {
-  const router = useRouter()
   const [selectedPlayer, setSelectedPlayer] = useState('')
   const [statType, setStatType] = useState<'goal' | 'assist'>('goal')
   const [isSubmitting, setIsSubmitting] = useState(false)

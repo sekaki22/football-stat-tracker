@@ -1,12 +1,8 @@
 import { prisma } from '@/lib/prisma'
 import SeasonWrapper from '@/components/SeasonWrapper'
 import SignInButton from '@/components/SignInButton'
-import { getServerSession } from 'next-auth'
-import { authOptions } from './api/auth/[...nextauth]/route'
 
 export default async function Home() {
-  const session = await getServerSession(authOptions)
-  
   // Get all players for initial load (24/25 season)
   const players = await prisma.player.findMany({
     orderBy: {

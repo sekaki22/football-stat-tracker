@@ -1,28 +1,22 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "sqlite"
-  url      = "file:./dev.db"
+  url      = env("DATABASE_URL")
 }
 
 model Player {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique
-  goals     Int      @default(0)
-  assists   Int      @default(0)
-  season    String   @default("24/25")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  userId    String?  @unique
-  user      User?    @relation(fields: [userId], references: [id])
+  id          Int           @id @default(autoincrement())
+  name        String        @unique
+  goals       Int           @default(0)
+  assists     Int           @default(0)
+  season      String        @default("24/25")
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  userId      String?       @unique
+  user        User?         @relation(fields: [userId], references: [id])
   seasonStats SeasonStats[]
 }
 
@@ -46,8 +40,8 @@ model User {
   emailVerified DateTime?
   image         String?
   accounts      Account[]
-  sessions      Session[]
   player        Player?
+  sessions      Session[]
 }
 
 model Account {
@@ -63,8 +57,7 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }

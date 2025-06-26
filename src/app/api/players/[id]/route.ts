@@ -1,13 +1,15 @@
 import { NextResponse } from 'next/server'
 import { PlayerService } from '@/lib/services/playerService'
+import { Player } from '@prisma/client'
 
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { goals, assists } = await request.json()
-    const playerId = parseInt(params.id)
+    const { id } = await params
+    const playerId = parseInt(id)
 
     if (isNaN(playerId)) {
       return NextResponse.json(
@@ -32,10 +34,11 @@ export async function PUT(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const playerId = parseInt(params.id)
+    const { id } = await params
+    const playerId = parseInt(id)
 
     if (isNaN(playerId)) {
       return NextResponse.json(
@@ -57,11 +60,12 @@ export async function DELETE(
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { goals, assists, season } = await request.json()
-    const playerId = parseInt(params.id)
+    const { id } = await params
+    const playerId = parseInt(id)
 
     if (isNaN(playerId)) {
       return NextResponse.json(
@@ -70,7 +74,7 @@ export async function PATCH(
       )
     }
 
-    let updatedPlayer: any
+    let updatedPlayer: Player
 
     if (season) {
       // Update season-specific stats

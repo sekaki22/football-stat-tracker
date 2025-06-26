@@ -17,6 +17,8 @@ export default function PlayerList({ players, currentSeason, onPlayerUpdated }: 
   const { data: session } = useSession()
   const [deletingId, setDeletingId] = useState<number | null>(null)
   const [editingPlayer, setEditingPlayer] = useState<Player | null>(null)
+  const [showAddPlayer, setShowAddPlayer] = useState(false)
+  const [showAddGoal, setShowAddGoal] = useState(false)
 
   async function handleDelete(playerId: number) {
     setDeletingId(playerId)
@@ -39,7 +41,7 @@ export default function PlayerList({ players, currentSeason, onPlayerUpdated }: 
     setEditingPlayer(player)
   }
 
-  function handleSave(updatedPlayer: Player) {
+  function handleSave() {
     if (onPlayerUpdated) {
       onPlayerUpdated()
     }
@@ -86,6 +88,22 @@ export default function PlayerList({ players, currentSeason, onPlayerUpdated }: 
             ))}
           </tbody>
         </table>
+        {session?.user?.isAdmin && (
+          <button
+            onClick={() => setShowAddPlayer(true)}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4"
+          >
+            Add Player
+          </button>
+        )}
+        {session?.user?.isAdmin && (
+          <button
+            onClick={() => setShowAddGoal(true)}
+            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mb-4 ml-2"
+          >
+            Add Goal
+          </button>
+        )}
       </div>
 
       {editingPlayer && (
