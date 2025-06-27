@@ -14,7 +14,7 @@
 /coverage
 
 # data
-/data
+/data/dev.db
 
 # database
 
