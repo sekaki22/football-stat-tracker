@@ -7,7 +7,37 @@ This guide explains how to deploy your Football Team Statistics app using Docker
 - Docker installed on your machine
 - Docker Compose (usually comes with Docker Desktop)
 
-## Quick Start
+## Environment Setup
+
+The application uses two separate environment files:
+
+### For Local Development (`.env.local`)
+Create a `.env.local` file in the root directory for local development:
+```env
+DATABASE_URL="file:./data/dev.db"
+NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="your-secret-key-here"
+GOOGLE_CLIENT_ID="your-google-client-id"
+GOOGLE_CLIENT_SECRET="your-google-client-secret"
+ADMIN_EMAILS="admin@example.com,another@example.com"
+```
+
+### For Docker Deployment (`.env`)
+Create a `.env` file in the root directory for Docker deployment:
+```env
+DATABASE_URL="file:/app/data/production.db"
+NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="your-secret-key-here"
+GOOGLE_CLIENT_ID="your-google-client-id"
+GOOGLE_CLIENT_SECRET="your-google-client-secret"
+ADMIN_EMAILS="admin@example.com,another@example.com"
+```
+
+**Note**: The `.env.local` file is excluded from Docker builds, so it won't interfere with your production environment.
+
+## Recommended: Docker Compose Deployment
+
+This is the easiest and most recommended approach.
 
 1. **Clone the repository** (if not already done):
    ```bash
@@ -16,24 +46,27 @@ This guide explains how to deploy your Football Team Statistics app using Docker
    ```
 
 2. **Set up environment variables**:
-   Create a `.env` file in the root directory with the following variables:
-   ```env
-   DATABASE_URL="file:/app/data/production.db"
-   NEXTAUTH_URL="http://localhost:3000"
-   NEXTAUTH_SECRET="your-secret-key-here"
-   ```
+   - Create `.env.local` for local development (see above)
+   - Create `.env` for Docker deployment (see above)
 
-3. **Build and run with Docker Compose**:
+3. **Deploy with Docker Compose**:
    ```bash
-   docker-compose up --build
+   docker compose up --build
    ```
 
 4. **Access the application**:
    Open your browser and go to `http://localhost:3000`
 
-## Manual Docker Commands
+**That's it!** Docker Compose handles everything automatically:
+- Building the image
+- Setting up environment variables
+- Creating and mounting volumes
+- Configuring networking
+- Applying restart policies
 
-If you prefer to use Docker commands directly:
+## Alternative: Manual Docker Commands
+
+If you prefer more control or need to integrate with CI/CD pipelines:
 
 1. **Build the image**:
    ```bash
@@ -43,20 +76,23 @@ If you prefer to use Docker commands directly:
 2. **Run the container**:
    ```bash
    docker run -p 3000:3000 \
-     -e DATABASE_URL="file:/app/data/production.db" \
-     -e NEXTAUTH_URL="http://localhost:3000" \
-     -e NEXTAUTH_SECRET="your-secret-key-here" \
+     --env-file .env \
      -v football-data:/app/data \
      football-stats
    ```
+
+**Note**: This approach requires you to manually handle volumes, networking, and restart policies.
 
 ## Environment Variables
 
 | Variable | Description | Required | Default |
 |----------|-------------|----------|---------|
-| `DATABASE_URL` | SQLite database file path | Yes | `file:/app/data/production.db` |
+| `DATABASE_URL` | SQLite database file path | Yes | `file:/app/data/production.db` (Docker) / `file:./data/dev.db` (local) |
 | `NEXTAUTH_URL` | Your application URL | Yes | `http://localhost:3000` |
 | `NEXTAUTH_SECRET` | Secret key for NextAuth.js | Yes | - |
+| `GOOGLE_CLIENT_ID` | Google OAuth client ID | Yes | - |
+| `GOOGLE_CLIENT_SECRET` | Google OAuth client secret | Yes | - |
+| `ADMIN_EMAILS` | Comma-separated admin email addresses | Yes | - |
 
 ## Data Persistence
 
@@ -68,7 +104,7 @@ For production deployment, consider the following:
 
 1. **Use a proper database**: Consider migrating from SQLite to PostgreSQL or MySQL for better performance and scalability.
 
-2. **Set up proper environment variables**: Use your actual domain and secrets.
+2. **Set up proper environment variables**: Use your actual domain and secrets in the `.env` file.
 
 3. **Configure reverse proxy**: Use Nginx or similar to handle SSL termination and load balancing.
 
@@ -93,19 +129,27 @@ If the build fails:
 2. Check that the Dockerfile is in the root directory
 3. Verify that `.dockerignore` is not excluding necessary files
 
-## Development with Docker
+### Environment Variable Issues
+If environment variables aren't loading:
+1. Ensure `.env` file exists in the root directory
+2. Check that the file format is correct (no spaces around `=`)
+3. Verify Docker Compose is reading the file correctly
 
-For development, you can also use Docker:
+## Development Workflow
 
+### Local Development
 ```bash
-# Build development image
-docker build -t football-stats-dev .
+# Uses .env.local automatically
+npm run dev
+```
 
-# Run with development environment
-docker run -p 3000:3000 \
-  -e NODE_ENV=development \
-  -e DATABASE_URL="file:/app/data/dev.db" \
-  -v $(pwd):/app \
-  -v /app/node_modules \
-  football-stats-dev
-``` 
+### Docker Development
+```bash
+# Uses .env file via Docker Compose
+docker compose up --build
+```
+
+### Switching Between Environments
+- **Local**: Uses `.env.local` (excluded from Docker)
+- **Docker**: Uses `.env` (injected via Docker Compose)
+- **No conflicts**: Each environment uses its own file 

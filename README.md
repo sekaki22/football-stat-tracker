@@ -14,7 +14,7 @@ A vibed Next.js application for tracking football team statistics, including goa
 
 - Next.js 15
 - TypeScript
-- Prisma (PostgreSQL)
+- Prisma (SQLite)
 - NextAuth.js
 - Tailwind CSS
 
@@ -34,7 +34,7 @@ npm install
 3. Set up environment variables:
 Create a `.env.local` file with the following variables:
 ```
-DATABASE_URL=your_postgresql_database_url
+DATABASE_URL=file:./data/dev.db
 GOOGLE_CLIENT_ID=your_google_client_id
 GOOGLE_CLIENT_SECRET=your_google_client_secret
 NEXTAUTH_URL=http://localhost:3000
@@ -54,7 +54,23 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## Deployment to Vercel
+## Deployment Options
+
+### Option 1: Docker Deployment (Recommended)
+
+For containerized deployment, see the [Docker Deployment Guide](DOCKER_README.md).
+
+Quick start:
+```bash
+# Create .env file for Docker
+cp .env.local .env
+# Edit .env to use production database path: file:/app/data/production.db
+
+# Deploy with Docker Compose
+docker compose up --build
+```
+
+### Option 2: Vercel Deployment
 
 1. Set up a PostgreSQL database:
    - Create a free account on [Neon](https://neon.tech)

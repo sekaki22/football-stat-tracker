@@ -1,16 +1,56 @@
+# Exclude everything by default
+*
 
-.dockerignore
+# Include essential files for the application
+!package.json
+!package-lock.json
+!next.config.ts
+!tsconfig.json
+!postcss.config.mjs
+!eslint.config.mjs
+!Dockerfile
+!.dockerignore
+
+# Include source code
+!src
+!src/**
+
+# Include public assets
+!public
+!public/**
+
+# Include Prisma schema and migrations
+!prisma
+!prisma/**
+
+# Include data directory (for database files)
+!data
+!data/**
+
+# Exclude all node_modules first
 node_modules
-npm-debug.log
-README.md
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-.git
-.gitignore
+node_modules/**
+
+# Then include Prisma client specifically (this overrides the exclusion above)
+!node_modules/@prisma/client
+!node_modules/@prisma/client/**
+
+# Exclude development and build files
 .next
 .vercel
 *.tsbuildinfo
+npm-debug.log
+README.md
+
+# Environment files - exclude .env.local but include .env for Docker
+.env.local
+.env.development
+.env.test
+.env.production.local
+
+# Include .env for Docker deployment
+!.env
+
+.git
+.gitignore
 .DS_Store 
