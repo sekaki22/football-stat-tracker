@@ -70,43 +70,6 @@ cp .env.local .env
 docker compose up --build
 ```
 
-### Option 2: Vercel Deployment
-
-1. Set up a PostgreSQL database:
-   - Create a free account on [Neon](https://neon.tech)
-   - Create a new project
-   - Copy the database connection string
-
-2. Update Google OAuth settings:
-   - Go to [Google Cloud Console](https://console.cloud.google.com)
-   - Add your Vercel domain to authorized domains
-   - Add `https://your-vercel-domain.vercel.app/api/auth/callback/google` to authorized redirect URIs
-
-3. Deploy to Vercel:
-   - Push your code to GitHub
-   - Go to [Vercel](https://vercel.com)
-   - Import your repository
-   - Add all environment variables
-   - Deploy!
-
-## Setting up Google Authentication
-
-1. Go to the [Google Cloud Console](https://console.cloud.google.com/)
-2. Create a new project or select an existing one
-3. Enable the Google+ API
-4. Go to "Credentials"
-5. Create an OAuth 2.0 Client ID
-6. Add authorized redirect URIs:
-   - `http://localhost:3000/api/auth/callback/google` (for development)
-   - `https://your-domain.com/api/auth/callback/google` (for production)
-
-## Admin Access
-
-To grant admin access to users:
-1. Add their Google email addresses to the `ADMIN_EMAILS` environment variable
-2. Separate multiple emails with commas
-3. Users need to sign in with their Google account to get admin privileges
-
 ## License
 
 MIT
