@@ -10,7 +10,7 @@ services:
     environment:
       - NODE_ENV=production
     volumes:
-      - football-data:/app/data
+      - ./data:/app/data
     restart: unless-stopped
 
 volumes:
