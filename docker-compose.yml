@@ -13,5 +13,21 @@ services:
       - ./data:/app/data
     restart: unless-stopped
 
+  nginx:
+    image: nginx
+    ports: ["80:80", "443:443"]
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d  # Nginx site config
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf  # Main config
+      - ./certbot/www:/var/www/certbot  # For ACME HTTP challenge
+      - ./certbot/conf:/etc/letsencrypt  # SSL certs
+    depends_on: [app]
+
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - ./certbot/www:/var/www/certbot
+      - ./certbot/conf:/etc/letsencrypt
+
 volumes:
   data:
