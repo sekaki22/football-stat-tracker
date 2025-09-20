@@ -42,6 +42,8 @@ NEXTAUTH_SECRET=your_nextauth_secret
 ADMIN_EMAILS=comma,separated,admin,emails
 ```
 
+**NOTE**: In order to find your Google Client ID, look into Google Cloud Console to set it up
+
 4. Set up the database:
 ```bash
 npx prisma migrate dev

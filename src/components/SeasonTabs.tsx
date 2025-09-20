@@ -68,12 +68,12 @@ export default function SeasonTabs({ currentSeason, onSeasonChange }: SeasonTabs
                 whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm
                 ${
                   currentSeason === season
-                    ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
+                    ? 'border-rose-500 text-rose-400'
+                    : 'border-transparent text-gray-400 hover:text-rose-300 hover:border-rose-500'
                 }
               `}
             >
-              Season {season}
+              Seizoen {season}
             </button>
           ))}
           
@@ -90,9 +90,9 @@ export default function SeasonTabs({ currentSeason, onSeasonChange }: SeasonTabs
                   />
                   <button
                     type="submit"
-                    className="px-3 py-1 text-sm bg-indigo-600 text-white rounded hover:bg-indigo-700"
+                    className="px-3 py-1 text-sm bg-rose-600 text-white rounded hover:bg-rose-700"
                   >
-                    Add
+                    Toevoegen
                   </button>
                   <button
                     type="button"
@@ -108,9 +108,9 @@ export default function SeasonTabs({ currentSeason, onSeasonChange }: SeasonTabs
               ) : (
                 <button
                   onClick={() => setShowAddSeason(true)}
-                  className="px-3 py-1 text-sm text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300"
+                  className="px-3 py-1 text-sm text-rose-400 hover:text-rose-300"
                 >
-                  + Add Season
+                  + Seizoen Toevoegen
                 </button>
               )}
             </div>

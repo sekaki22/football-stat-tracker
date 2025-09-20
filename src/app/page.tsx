@@ -11,9 +11,12 @@ export default async function Home() {
   })
 
   return (
-    <main className="min-h-screen p-8 bg-gray-50 dark:bg-gray-900">
+    <main className="min-h-screen p-8">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">Football Team Statistics</h1>
+        <div className="flex items-center gap-4">
+          <img src="/logo.jpeg" alt="Logo" className="h-10 w-10 rounded" />
+          <h1 className="text-4xl font-bold text-gray-100">Quick 1888 Zaterdag 2 teampagina</h1>
+        </div>
         <SignInButton />
       </div>
       

@@ -7,6 +7,7 @@ import PlayerStats from './PlayerStats'
 import AddGoalForm from './AddGoalForm'
 import AddPlayerForm from './AddPlayerForm'
 import SeasonTabs from './SeasonTabs'
+import Modal from './Modal'
 import { useSession } from 'next-auth/react'
 
 interface SeasonWrapperProps {
@@ -17,6 +18,8 @@ export default function SeasonWrapper({ initialPlayers }: SeasonWrapperProps) {
   const { data: session } = useSession()
   const [currentSeason, setCurrentSeason] = useState('24/25')
   const [players, setPlayers] = useState(initialPlayers)
+  const [showAddPlayerModal, setShowAddPlayerModal] = useState(false)
+  const [showAddGoalModal, setShowAddGoalModal] = useState(false)
 
   const handleSeasonChange = async (season: string) => {
     setCurrentSeason(season)
@@ -51,36 +54,55 @@ export default function SeasonWrapper({ initialPlayers }: SeasonWrapperProps) {
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div>
-          <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Top Scorers</h2>
+          <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Spelerslijst</h2>
           <PlayerList 
             players={players} 
             currentSeason={currentSeason}
             onPlayerUpdated={handleStatAdded}
           />
+          {session?.user?.isAdmin && (
+            <div className="mt-4 flex flex-wrap gap-3">
+              <button
+                onClick={() => setShowAddPlayerModal(true)}
+                className="px-4 py-2 rounded-md bg-rose-600 text-white hover:bg-rose-700"
+              >
+                Speler toevoegen
+              </button>
+              <button
+                onClick={() => setShowAddGoalModal(true)}
+                className="px-4 py-2 rounded-md bg-green-400 text-white hover:bg-green-500"
+              >
+                Goal/Assist toevoegen
+              </button>
+            </div>
+          )}
         </div>
         
         <div>
-          <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Player Statistics</h2>
+          <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Statistieken</h2>
           <PlayerStats players={players} />
         </div>
       </div>
 
-      {session?.user?.isAdmin && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
-          <div>
-            <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Add Player</h2>
-            <AddPlayerForm />
-          </div>
-          <div>
-            <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Add Goal/Assist</h2>
-            <AddGoalForm 
-              players={players} 
-              currentSeason={currentSeason}
-              onStatAdded={handleStatAdded}
-            />
-          </div>
-        </div>
-      )}
+      <Modal
+        isOpen={showAddPlayerModal}
+        onClose={() => setShowAddPlayerModal(false)}
+        title="Speler toevoegen"
+      >
+        <AddPlayerForm />
+      </Modal>
+
+      <Modal
+        isOpen={showAddGoalModal}
+        onClose={() => setShowAddGoalModal(false)}
+        title="Goal/Assist toevoegen"
+      >
+        <AddGoalForm
+          players={players}
+          currentSeason={currentSeason}
+          onStatAdded={handleStatAdded}
+        />
+      </Modal>
     </>
   )
 } 

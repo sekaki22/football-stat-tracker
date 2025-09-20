@@ -71,7 +71,7 @@ export default function PlayerList({ players, currentSeason, onPlayerUpdated }: 
                   <td className="text-right py-2 space-x-2">
                     <button
                       onClick={() => handleEdit(player)}
-                      className="text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300"
+                      className="text-rose-400 hover:text-rose-300"
                     >
                       Edit
                     </button>
@@ -88,22 +88,6 @@ export default function PlayerList({ players, currentSeason, onPlayerUpdated }: 
             ))}
           </tbody>
         </table>
-        {session?.user?.isAdmin && (
-          <button
-            onClick={() => setShowAddPlayer(true)}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4"
-          >
-            Add Player
-          </button>
-        )}
-        {session?.user?.isAdmin && (
-          <button
-            onClick={() => setShowAddGoal(true)}
-            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mb-4 ml-2"
-          >
-            Add Goal
-          </button>
-        )}
       </div>
 
       {editingPlayer && (

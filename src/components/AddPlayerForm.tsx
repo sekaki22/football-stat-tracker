@@ -46,7 +46,7 @@ export default function AddPlayerForm() {
       <div className="space-y-4">
         <div>
           <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-            Player Name
+            Naam Speler
           </label>
           <input
             type="text"
@@ -59,7 +59,7 @@ export default function AddPlayerForm() {
         </div>
         <div>
           <label htmlFor="goals" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-            Initial Goals
+            Initieel Aantal Doelpunten
           </label>
           <input
             type="number"
@@ -72,7 +72,7 @@ export default function AddPlayerForm() {
         </div>
         <div>
           <label htmlFor="assists" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-            Initial Assists
+            Initieel Aantal Assists
           </label>
           <input
             type="number"
@@ -86,9 +86,9 @@ export default function AddPlayerForm() {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50"
+          className="w-full   bg-rose-500 text-white py-2 px-4 rounded-md hover:bg-rose-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50"
         >
-          {isSubmitting ? 'Adding...' : 'Add Player'}
+          {isSubmitting ? 'Toevoegen...' : 'Speler Toevoegen'}
         </button>
       </div>
     </form>

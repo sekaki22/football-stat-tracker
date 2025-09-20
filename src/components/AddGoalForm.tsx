@@ -65,7 +65,7 @@ export default function AddGoalForm({ players, currentSeason, onStatAdded }: Add
         <div className="space-y-4">
           <div>
             <label htmlFor="player" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Select Player
+              Selecteer Speler
             </label>
             <select
               id="player"
@@ -74,7 +74,7 @@ export default function AddGoalForm({ players, currentSeason, onStatAdded }: Add
               className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
               required
             >
-              <option value="">Choose a player</option>
+              <option value="">Kies een speler</option>
               {players.map((player) => (
                 <option key={player.id} value={player.id}>
                   {player.name}
@@ -84,7 +84,7 @@ export default function AddGoalForm({ players, currentSeason, onStatAdded }: Add
           </div>
           <div>
             <label htmlFor="statType" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Stat Type
+              Statistiek Type
             </label>
             <select
               id="statType"
@@ -108,9 +108,9 @@ export default function AddGoalForm({ players, currentSeason, onStatAdded }: Add
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50"
+            className="w-full bg-rose-500 text-white py-2 px-4 rounded-md hover:bg-rose-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50"
           >
-            {isSubmitting ? 'Adding...' : `Add ${statType === 'goal' ? 'Goal' : 'Assist'}`}
+            {isSubmitting ? 'Toevoegen...' : `${statType === 'goal' ? 'Goal' : 'Assist'} Toevoegen`}
           </button>
         </div>
       </form>
