@@ -3,7 +3,11 @@
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
-export default function AddPlayerForm() {
+interface AddPlayerFormProps {
+  onAdded?: () => void
+}
+
+export default function AddPlayerForm({ onAdded }: AddPlayerFormProps) {
   const router = useRouter()
   const [name, setName] = useState('')
   const [goals, setGoals] = useState('0')
@@ -33,6 +37,7 @@ export default function AddPlayerForm() {
         setName('')
         setGoals('0')
         setAssists('0')
+        if (onAdded) onAdded()
       }
     } catch (error) {
       console.error('Error adding player:', error)

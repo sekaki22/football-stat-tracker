@@ -8,9 +8,10 @@ interface AddGoalFormProps {
   players: Player[]
   currentSeason: string
   onStatAdded?: () => void
+  onAdded?: () => void
 }
 
-export default function AddGoalForm({ players, currentSeason, onStatAdded }: AddGoalFormProps) {
+export default function AddGoalForm({ players, currentSeason, onStatAdded, onAdded }: AddGoalFormProps) {
   const [selectedPlayer, setSelectedPlayer] = useState('')
   const [statType, setStatType] = useState<'goal' | 'assist'>('goal')
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -39,9 +40,8 @@ export default function AddGoalForm({ players, currentSeason, onStatAdded }: Add
         setSelectedPlayer('')
         
         // Call the callback to refresh data
-        if (onStatAdded) {
-          onStatAdded()
-        }
+        if (onStatAdded) onStatAdded()
+        if (onAdded) onAdded()
         
         // Show meme if it's a goal
         if (statType === 'goal') {

@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server'
 import { PlayerService } from '@/lib/services/playerService'
 
+// Ensure this route is never statically cached
+export const dynamic = 'force-dynamic'
+
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url)

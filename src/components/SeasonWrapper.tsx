@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Player } from '@prisma/client'
 import PlayerList from './PlayerList'
 import PlayerStats from './PlayerStats'
@@ -16,8 +16,9 @@ interface SeasonWrapperProps {
 
 export default function SeasonWrapper({ initialPlayers }: SeasonWrapperProps) {
   const { data: session } = useSession()
-  const [currentSeason, setCurrentSeason] = useState('24/25')
+  const [currentSeason, setCurrentSeason] = useState('25/26')
   const [players, setPlayers] = useState(initialPlayers)
+  
   const [showAddPlayerModal, setShowAddPlayerModal] = useState(false)
   const [showAddGoalModal, setShowAddGoalModal] = useState(false)
 
@@ -25,7 +26,7 @@ export default function SeasonWrapper({ initialPlayers }: SeasonWrapperProps) {
     setCurrentSeason(season)
     
     try {
-      const response = await fetch(`/api/players?season=${season}`)
+      const response = await fetch(`/api/players?season=${season}`, { cache: 'no-store' })
       if (response.ok) {
         const seasonPlayers = await response.json()
         setPlayers(seasonPlayers)
@@ -38,7 +39,7 @@ export default function SeasonWrapper({ initialPlayers }: SeasonWrapperProps) {
   const handleStatAdded = async () => {
     // Refresh the current season data
     try {
-      const response = await fetch(`/api/players?season=${currentSeason}`)
+      const response = await fetch(`/api/players?season=${currentSeason}`, { cache: 'no-store' })
       if (response.ok) {
         const seasonPlayers = await response.json()
         setPlayers(seasonPlayers)
@@ -47,6 +48,13 @@ export default function SeasonWrapper({ initialPlayers }: SeasonWrapperProps) {
       console.error('Error refreshing season data:', error)
     }
   }
+
+  // Fetch players for the default season on initial mount
+  useEffect(() => {
+    // Ensure the first render reflects the selected default season
+    handleSeasonChange(currentSeason)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <>
@@ -89,7 +97,7 @@ export default function SeasonWrapper({ initialPlayers }: SeasonWrapperProps) {
         onClose={() => setShowAddPlayerModal(false)}
         title="Speler toevoegen"
       >
-        <AddPlayerForm />
+        <AddPlayerForm onAdded={() => setShowAddPlayerModal(false)} />
       </Modal>
 
       <Modal
@@ -101,6 +109,7 @@ export default function SeasonWrapper({ initialPlayers }: SeasonWrapperProps) {
           players={players}
           currentSeason={currentSeason}
           onStatAdded={handleStatAdded}
+          onAdded={() => setShowAddGoalModal(false)}
         />
       </Modal>
     </>
