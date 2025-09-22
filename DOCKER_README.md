@@ -149,6 +149,20 @@ npm run dev
 docker compose up --build
 ```
 
+### Doing a new deployment to the app
+In order to deploy new changes to the app run followig command
+
+```bash 
+docker-compose up -d --build app
+```
+
+If you also need to do any database migrations because of a schema change you can run additional command
+
+```bash
+docker-compose exec app npx prisma migrate deploy
+```
+
+
 ### Switching Between Environments
 - **Local**: Uses `.env.local` (excluded from Docker)
 - **Docker**: Uses `.env` (injected via Docker Compose)

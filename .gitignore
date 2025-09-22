@@ -16,6 +16,9 @@
 # data
 /data/dev.db
 
+#backups
+.backups/*
+
 # database
 
 # next.js
