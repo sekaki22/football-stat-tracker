@@ -37,6 +37,10 @@ export class PlayerService {
         goals: stats?.goals || 0,
         assists: stats?.assists || 0
       }
+    }).sort((a, b) => {
+      const aTotal = a.goals + a.assists
+      const bTotal = b.goals + b.assists
+      return bTotal - aTotal
     })
   }
 
