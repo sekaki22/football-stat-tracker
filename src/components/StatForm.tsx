@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useRef } from 'react'
 
 interface Player {
   id: number
@@ -27,10 +27,7 @@ export default function StatForm({ season, onStatsUpdated }: StatFormProps) {
   const [isLoading, setIsLoading] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
-
-  useEffect(() => {
-    fetchPlayers()
-  }, [season])
+  const hasFetched = useRef(false)
 
   const fetchPlayers = async () => {
     try {
@@ -57,6 +54,12 @@ export default function StatForm({ season, onStatsUpdated }: StatFormProps) {
     } finally {
       setIsLoading(false)
     }
+  }
+
+  // Fetch players on mount (direct call pattern)
+  if (!hasFetched.current) {
+    hasFetched.current = true
+    fetchPlayers()
   }
 
   const updatePlayerStat = (playerId: number, statType: 'goals' | 'assists', value: number) => {
@@ -131,7 +134,7 @@ export default function StatForm({ season, onStatsUpdated }: StatFormProps) {
   if (isLoading) {
     return (
       <div className="p-4">
-        <div className="animate-pulse text-sm">Loading players...</div>
+        <div className="animate-pulse text-sm">Spelers laden...</div>
       </div>
     )
   }
@@ -151,7 +154,7 @@ export default function StatForm({ season, onStatsUpdated }: StatFormProps) {
       <form onSubmit={handleSubmit}>
         <div className="mb-3 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
           {players.map((player) => (
-            <div key={player.id} className="border rounded p-3 bg-gray-50 dark:bg-gray-700">
+            <div key={player.id} className="border rounded p-3 bg-gray-50 dark:bg-gray-700 border-rose-600">
               <h3 className="font-medium text-sm text-gray-900 dark:text-gray-100 mb-2 truncate" title={player.name}>
                 {player.name}
               </h3>
@@ -190,14 +193,14 @@ export default function StatForm({ season, onStatsUpdated }: StatFormProps) {
         </div>
 
         <div className="mb-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded">
-          <h3 className="font-medium text-blue-900 dark:text-blue-100 mb-2 text-sm">Match Summary</h3>
+          <h3 className="font-medium text-blue-900 dark:text-blue-100 mb-2 text-sm">Overzicht</h3>
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
-              <span className="text-blue-700 dark:text-blue-300">Total Goals: </span>
+              <span className="text-blue-700 dark:text-blue-300">Totaal Goals: </span>
               <span className="font-semibold">{getTotalGoals()}</span>
             </div>
             <div>
-              <span className="text-blue-700 dark:text-blue-300">Total Assists: </span>
+              <span className="text-blue-700 dark:text-blue-300">Totaal Assists: </span>
               <span className="font-semibold">{getTotalAssists()}</span>
             </div>
           </div>
@@ -209,7 +212,7 @@ export default function StatForm({ season, onStatsUpdated }: StatFormProps) {
             disabled={isSubmitting}
             className="flex-1 bg-rose-600 text-white py-2 px-3 rounded text-sm hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isSubmitting ? 'Saving...' : 'Save Match Statistics'}
+            {isSubmitting ? 'Opslaan...' : 'Statistieken opslaan'}
           </button>
           
           <button

@@ -71,7 +71,7 @@ export default function PlayerList({ players, currentSeason, onPlayerUpdated }: 
                   <td className="text-right py-2 space-x-2">
                     <button
                       onClick={() => handleEdit(player)}
-                      className="text-rose-400 hover:text-rose-300"
+                      className="text-blue-400 hover:text-blue-300"
                     >
                       Edit
                     </button>
