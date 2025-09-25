@@ -78,8 +78,6 @@ export default function Modal({ isOpen, onClose, title, children, size = 'md' }:
         <div className={`${
           size === 'xl' || size === 'full' 
             ? 'p-4 overflow-y-auto h-full' 
-            : size === 'full' 
-            ? 'overflow-y-auto h-full' 
             : 'p-5'
         }`}>
           {children}
