@@ -18,6 +18,7 @@ model Player {
   userId      String?       @unique
   user        User?         @relation(fields: [userId], references: [id])
   seasonStats SeasonStats[]
+  fines       Fine[]
 }
 
 model SeasonStats {
@@ -60,6 +61,31 @@ model Account {
   user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+}
+
+model FineInformation {
+  id               Int      @id @default(autoincrement())
+  fine_type        String   @unique
+  fine_amount      Int      @default(0)
+  fine_description String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  fines            Fine[]
+
+  @@map("FineInformation")
+}
+
+model Fine {
+  id           Int             @id @default(autoincrement())
+  fine_type_id Int
+  fine_amount  Int             @default(0)
+  player_id    Int
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  fineInfo     FineInformation @relation(fields: [fine_type_id], references: [id], onDelete: Cascade)
+  player       Player          @relation(fields: [player_id], references: [id], onDelete: Cascade)
+
+  @@map("Fines")
 }
 
 model Session {
