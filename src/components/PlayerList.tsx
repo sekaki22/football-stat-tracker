@@ -50,44 +50,77 @@ export default function PlayerList({ players, currentSeason, onPlayerUpdated }: 
   return (
     <>
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-        <table className="w-full">
-          <thead>
-            <tr className="border-b dark:border-gray-700">
-              <th className="text-left py-2 text-gray-900 dark:text-gray-100">Player</th>
-              <th className="text-right py-2 text-gray-900 dark:text-gray-100">Goals</th>
-              <th className="text-right py-2 text-gray-900 dark:text-gray-100">Assists</th>
-              {session?.user?.isAdmin && (
-                <th className="text-right py-2 text-gray-900 dark:text-gray-100">Actions</th>
-              )}
-            </tr>
-          </thead>
-          <tbody>
-            {players.map((player) => (
-              <tr key={player.id} className="border-b dark:border-gray-700">
-                <td className="py-2 text-gray-900 dark:text-gray-100">{player.name}</td>
-                <td className="text-right py-2 text-gray-900 dark:text-gray-100">{player.goals}</td>
-                <td className="text-right py-2 text-gray-900 dark:text-gray-100">{player.assists}</td>
+        <div className="table-container">
+          <table className="table-base">
+            <thead className="table-header">
+              <tr>
+                <th className="table-header-cell-primary">Player</th>
+                <th className="table-header-cell-primary text-right">Goals</th>
+                <th className="table-header-cell-primary text-right">Assists</th>
+                <th className="table-header-cell-primary text-right">Total</th>
                 {session?.user?.isAdmin && (
-                  <td className="text-right py-2 space-x-2">
-                    <button
-                      onClick={() => handleEdit(player)}
-                      className="text-blue-400 hover:text-blue-300"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDelete(player.id)}
-                      disabled={deletingId === player.id}
-                      className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 disabled:opacity-50"
-                    >
-                      {deletingId === player.id ? 'Deleting...' : 'Delete'}
-                    </button>
-                  </td>
+                  <th className="table-header-cell-primary text-right">Actions</th>
                 )}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="table-body">
+              {players.map((player, index) => (
+                <tr key={player.id} className="table-row">
+                  <td className="table-cell">
+                    <div className="flex items-center">
+                      <span className="text-xs text-gray-500 dark:text-gray-400 mr-3 w-6">
+                        #{index + 1}
+                      </span>
+                      <span className="font-medium">{player.name}</span>
+                    </div>
+                  </td>
+                  <td className="table-cell-right">
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                      {player.goals}
+                    </span>
+                  </td>
+                  <td className="table-cell-right">
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                      {player.assists}
+                    </span>
+                  </td>
+                  <td className="table-cell-right">
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-rose-100 text-rose-800 dark:bg-rose-900 dark:text-rose-200">
+                      {player.goals + player.assists}
+                    </span>
+                  </td>
+                  {session?.user?.isAdmin && (
+                    <td className="table-cell-right">
+                      <div className="flex justify-end space-x-2">
+                        <button
+                          onClick={() => handleEdit(player)}
+                          className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 text-sm font-medium"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDelete(player.id)}
+                          disabled={deletingId === player.id}
+                          className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 disabled:opacity-50 text-sm font-medium"
+                        >
+                          {deletingId === player.id ? 'Deleting...' : 'Delete'}
+                        </button>
+                      </div>
+                    </td>
+                  )}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {players.length === 0 && (
+          <div className="text-center py-8">
+            <p className="text-gray-500 dark:text-gray-400">
+              Nog geen spelers toegevoegd voor dit seizoen.
+            </p>
+          </div>
+        )}
       </div>
 
       {editingPlayer && (

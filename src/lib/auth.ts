@@ -32,6 +32,18 @@ export const authOptions = {
       
       return false // Deny access to all other emails
     },
+    async jwt({ token, user }: { token: any; user?: any }) {
+      if (user) {
+        // Define admin emails
+        const adminEmails = ['admin@example.com', 'selim@example.com'] // Add your admin emails here
+        token.isAdmin = adminEmails.includes(user.email || '')
+      }
+      return token
+    },
+    async session({ session, token }: { session: any; token: any }) {
+      session.user.isAdmin = token.isAdmin as boolean
+      return session
+    },
   },
   pages: {
     signIn: '/auth/signin',

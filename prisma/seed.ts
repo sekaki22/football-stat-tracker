@@ -70,10 +70,17 @@ async function main() {
   
   if (playerCount === 0) {
     const examplePlayers = [
-      { name: 'Jan de Vries', season: '25/26' },
-      { name: 'Piet Janssen', season: '25/26' },
-      { name: 'Klaas de Wit', season: '25/26' },
-      { name: 'Henk van Dam', season: '25/26' },
+      { name: 'Silla', season: '25/26' , goals: 10, assists: 0},
+      { name: 'Tri', season: '25/26', goals: 2, assists: 4 },
+      { name: 'Pay', season: '25/26' },
+      { name: 'Jos', season: '25/26' },
+      { name: 'Jizo', season: '25/26'},
+      { name: 'Cliff', season: '25/26' },
+      { name: 'Michel', season: '25/26' },
+      { name: 'Idris', season: '25/26' },
+      { name: 'Robin', season: '25/26' },
+      { name: 'Ari', season: '25/26'},
+
     ]
 
     for (const player of examplePlayers) {

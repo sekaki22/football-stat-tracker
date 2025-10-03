@@ -16,9 +16,9 @@ model Player {
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
   userId      String?       @unique
+  Fine        Fine[]
   user        User?         @relation(fields: [userId], references: [id])
   seasonStats SeasonStats[]
-  fines       Fine[]
 }
 
 model SeasonStats {
@@ -65,7 +65,7 @@ model Account {
 
 model FineInformation {
   id               Int      @id @default(autoincrement())
-  fine_type        String   @unique
+  fine_type        String   @unique(map: "sqlite_autoindex_FineInformation_1")
   fine_amount      Int      @default(0)
   fine_description String
   createdAt        DateTime @default(now())
@@ -82,8 +82,8 @@ model Fine {
   player_id    Int
   createdAt    DateTime        @default(now())
   updatedAt    DateTime        @updatedAt
-  fineInfo     FineInformation @relation(fields: [fine_type_id], references: [id], onDelete: Cascade)
   player       Player          @relation(fields: [player_id], references: [id], onDelete: Cascade)
+  fineInfo     FineInformation @relation(fields: [fine_type_id], references: [id], onDelete: Cascade)
 
   @@map("Fines")
 }
@@ -102,4 +102,23 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model CorveeTeams {
+  id              Int      @id @default(autoincrement())
+  season          String
+  team_letter     String
+  player_nickname String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model CorveePlanning {
+  id          Int      @id @default(autoincrement())
+  season      String
+  team_letter String
+  year        Int
+  week        Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
 }

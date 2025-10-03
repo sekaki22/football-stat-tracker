@@ -16,43 +16,47 @@ export default async function RegelsPage() {
             </section>
           )}
           
-          {/* Simple hardcoded table */}
+          {/* Boete overzicht table with generic styles */}
           <section className="mt-8">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
               Boete Overzicht
             </h2>
-            <div className="overflow-x-auto">
-              <table className="min-w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg">
-                <thead className="bg-gray-50 dark:bg-gray-900">
+            <div className="table-container">
+              <table className="table-base">
+                <thead className="table-header">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-rose-500 dark:text-rose-500 uppercase tracking-wider">
+                    <th className="table-header-cell-primary">
                       Overtreding
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-rose-500 dark:text-rose-500 uppercase tracking-wider">
+                    <th className="table-header-cell-primary">
                       Boete
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-rose-500 dark:text-rose-500 uppercase tracking-wider">
+                    <th className="table-header-cell-primary">
                       Opmerkingen
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                <tbody className="table-body">
                   {fineTypes.map((fineType) => (
-                    <tr key={fineType.id}>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
+                    <tr key={fineType.id} className="table-row">
+                      <td className="table-cell">
                         {fineType.fine_type}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
-                        €{fineType.fine_amount}
+                      <td className="table-cell">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
+                          €{fineType.fine_amount}
+                        </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                        {fineType.fine_description}
+                      <td className="table-cell-secondary">
+                        {fineType.fine_description || '-'}
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
+
+
           </section>
         </main>
   )
