@@ -74,7 +74,7 @@ export default async function BoetesPage() {
                                 €{totalFinesAmount}
                             </div>
                             <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                                Totaal Boetes
+                                Totaal Boetebedrag
                             </div>
                         </div>
                     </div>

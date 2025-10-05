@@ -3,7 +3,13 @@ import { prisma } from "@/lib/prisma"
 import GoogleProvider from "next-auth/providers/google"
 
 export const authOptions = {
+  debug: true, // Enable debug logs
   adapter: PrismaAdapter(prisma),
+  secret: process.env.NEXTAUTH_SECRET,
+  session: {
+    strategy: "jwt", // Use JWT for simpler setup
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+  },
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -13,29 +19,23 @@ export const authOptions = {
   callbacks: {
     async signIn({ user }: { user: { email?: string | null } }) {
       // List of allowed email domains
-      const allowedDomains = ['example.com', 'yourcompany.com']
-      // Or specific email addresses
-      const allowedEmails = ['admin@example.com', 'user@example.com']
       
       if (user.email) {
-        // Check if email domain is allowed
-        const emailDomain = user.email.split('@')[1]
-        if (allowedDomains.includes(emailDomain)) {
           return true
-        }
         
-        // Check if specific email is allowed
-        if (allowedEmails.includes(user.email)) {
-          return true
-        }
       }
       
       return false // Deny access to all other emails
     },
     async jwt({ token, user }: { token: any; user?: any }) {
       if (user) {
-        // Define admin emails
-        const adminEmails = ['admin@example.com', 'selim@example.com'] // Add your admin emails here
+        // Get admin emails from environment variable
+        const adminEmailsString = process.env.ADMIN_EMAILS || ''
+        const adminEmails = adminEmailsString
+          .split(',')
+          .map(email => email.trim())
+          .filter(Boolean)
+        
         token.isAdmin = adminEmails.includes(user.email || '')
       }
       return token

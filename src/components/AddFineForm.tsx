@@ -44,17 +44,26 @@ export default function AddFineForm({ players, fineTypes }: AddFineFormProps) {
         setMessage(null)
 
         try {
+            console.log('📤 Sending fine request...')
             const response = await fetch('/api/fines', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                credentials: 'include',  // Add credentials for session handling
                 body: JSON.stringify({
                     player_id: selectedPlayer,
                     fine_type_id: selectedFineType,
                     fine_amount: customAmount || defaultAmount
                 }),
             })
+
+            // Log the response status
+            console.log('📥 Response status:', response.status)
+            
+            // Try to get response body even if it's an error
+            const responseData = await response.json()
+            console.log('📥 Response data:', responseData)
 
             if (response.ok) {
                 setMessage({ type: 'success', text: 'Boete succesvol toegevoegd!' })
