@@ -1,5 +1,6 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { PlayerService } from '@/lib/services/playerService'
+import { withAdminAuth } from '@/lib/middleware'
 
 export async function GET() {
   try {
@@ -14,7 +15,8 @@ export async function GET() {
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
+  return withAdminAuth(request, async () => {
   try {
     const { season } = await request.json()
 
@@ -46,4 +48,5 @@ export async function POST(request: Request) {
       { status: 500 }
     )
   }
+  })
 } 

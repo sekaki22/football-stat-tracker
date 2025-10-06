@@ -1,5 +1,6 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { PlayerService } from '@/lib/services/playerService'
+import { withAdminAuth } from '@/lib/middleware'
 
 // Ensure this route is never statically cached
 export const dynamic = 'force-dynamic'
@@ -26,7 +27,8 @@ export async function GET(request: Request) {
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
+  return withAdminAuth(request, async () => {
   try {
     const { name, goals, assists } = await request.json()
 
@@ -50,4 +52,5 @@ export async function POST(request: Request) {
       { status: 500 }
     )
   }
+  })
 } 

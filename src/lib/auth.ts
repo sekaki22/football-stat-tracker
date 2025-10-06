@@ -1,13 +1,15 @@
-import { PrismaAdapter } from '@next-auth/prisma-adapter'
-import { prisma } from "@/lib/prisma"
 import GoogleProvider from "next-auth/providers/google"
+import { NextAuthOptions } from 'next-auth'
 
-export const authOptions = {
+export const authOptions: NextAuthOptions = {
   debug: true, // Enable debug logs
-  adapter: PrismaAdapter(prisma),
   secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: "jwt", // Use JWT for simpler setup
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+  },
+  jwt: {
+    secret: process.env.NEXTAUTH_SECRET,
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   providers: [
@@ -45,8 +47,5 @@ export const authOptions = {
       return session
     },
   },
-  pages: {
-    signIn: '/auth/signin',
-    error: '/auth/error',
-  },
+  // Use default NextAuth pages
 } 

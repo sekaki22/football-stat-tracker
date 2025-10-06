@@ -1,32 +1,33 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { withUserAuth, withAdminAuth } from '@/lib/middleware'
 
-// GET - Fetch all fines with related data
+// GET - Fetch all fines with related data (public for now)
 export async function GET(request: NextRequest) {
-        try {
-            const fines = await prisma.fine.findMany({
-                include: {
-                    player: true,
-                    fineInfo: true
-                },
-                orderBy: {
-                    createdAt: 'desc'
-                }
-            })
+    try {
+        const fines = await prisma.fine.findMany({
+            include: {
+                player: true,
+                fineInfo: true
+            },
+            orderBy: {
+                createdAt: 'desc'
+            }
+        })
 
-            return NextResponse.json(fines)
-        } catch (error) {
-            console.error('Error fetching fines:', error)
-            return NextResponse.json(
-                { error: 'Failed to fetch fines' },
-                { status: 500 }
-            )
-        }
-    
+        return NextResponse.json(fines)
+    } catch (error) {
+        console.error('Error fetching fines:', error)
+        return NextResponse.json(
+            { error: 'Failed to fetch fines' },
+            { status: 500 }
+        )
+    }
 }
 
 // POST - Add a new fine (admin only)
 export async function POST(request: NextRequest) {
+    return withAdminAuth(request, async () => {
         try {
             const body = await request.json()
             const { player_id, fine_type_id, fine_amount } = body
@@ -87,11 +88,12 @@ export async function POST(request: NextRequest) {
                 { status: 500 }
             )
         }
-    
+    })
 }
 
 // DELETE - Remove a fine (admin only)
 export async function DELETE(request: NextRequest) {
+    return withAdminAuth(request, async () => {
         try {
             const { searchParams } = new URL(request.url)
             const fineId = searchParams.get('id')
@@ -131,5 +133,5 @@ export async function DELETE(request: NextRequest) {
                 { status: 500 }
             )
         }
-    
+    })
 }

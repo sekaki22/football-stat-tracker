@@ -1,7 +1,9 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { PlayerService } from '@/lib/services/playerService'
+import { withAdminAuth } from '@/lib/middleware'
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
+  return withAdminAuth(request, async () => {
   try {
     const { playerId, season, goals, assists } = await request.json()
 
@@ -49,6 +51,8 @@ export async function POST(request: Request) {
     return NextResponse.json(
       { error: 'Failed to update match statistics' },
       { status: 500 }
-    )
+      )
+    }
+  })
   }
-}
+

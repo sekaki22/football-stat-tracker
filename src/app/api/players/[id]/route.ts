@@ -1,11 +1,13 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { PlayerService } from '@/lib/services/playerService'
 import { Player } from '@prisma/client'
+import { withAdminAuth } from '@/lib/middleware'
 
 export async function PUT(
-  request: Request,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  return withAdminAuth(request, async () => {
   try {
     const { goals, assists } = await request.json()
     const { id } = await params
@@ -30,12 +32,14 @@ export async function PUT(
       { status: 500 }
     )
   }
+  })
 }
 
 export async function DELETE(
-  request: Request,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  return withAdminAuth(request, async () => {
   try {
     const { id } = await params
     const playerId = parseInt(id)
@@ -56,12 +60,14 @@ export async function DELETE(
       { status: 500 }
     )
   }
+  })
 }
 
 export async function PATCH(
-  request: Request,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  return withAdminAuth(request, async () => {
   try {
     const { goals, assists, season } = await request.json()
     const { id } = await params
@@ -98,4 +104,5 @@ export async function PATCH(
       { status: 500 }
     )
   }
+  })
 } 
