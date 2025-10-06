@@ -1,5 +1,7 @@
+
 import { prisma } from "@/lib/prisma"
 import AdminFineSection from "@/components/AdminFineSection"
+import Link from "next/link";       
 
 export default async function BoetesPage() {
     // Fetch all fines with related data
@@ -119,9 +121,12 @@ export default async function BoetesPage() {
                                             <span className="text-white text-sm font-bold">#{index + 1}</span>
                                         </div>
                                         <div>
-                                            <div className="font-medium text-gray-900 dark:text-gray-100">
+                                            <Link 
+                                                href={`/boetes/players/${playerData.player.id}`}
+                                                className="font-medium text-gray-900 dark:text-gray-100 hover:text-rose-500 dark:hover:text-rose-400 cursor-pointer"
+                                            >
                                                 {playerData.player.name}
-                                            </div>
+                                            </Link>
                                             <div className="text-sm text-gray-600 dark:text-gray-400">
                                                 {playerData.fineCount} boetes
                                             </div>
@@ -168,9 +173,12 @@ export default async function BoetesPage() {
                                     return (
                                         <tr key={playerData.player.id} className="table-row">
                                             <td className="table-cell">
-                                                <div className="font-medium text-gray-900 dark:text-gray-100">
+                                                <Link
+                                                    href={`/boetes/players/${playerData.player.id}`}
+                                                    className="font-medium text-gray-900 dark:text-gray-100 hover:text-rose-500 dark:hover:text-rose-400"
+                                                >
                                                     {playerData.player.name}
-                                                </div>
+                                                </Link>
                                             </td>
                                             <td className="table-cell">
                                                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
@@ -223,7 +231,12 @@ export default async function BoetesPage() {
                                             {new Date(fine.createdAt).toLocaleDateString('nl-NL')}
                                         </td>
                                         <td className="table-cell">
-                                            {fine.player.name}
+                                            <Link
+                                                href={`/boetes/players/${fine.player_id}`}
+                                                className="font-medium text-gray-900 dark:text-gray-100 hover:text-rose-500 dark:hover:text-rose-400"
+                                            >
+                                                {fine.player.name}
+                                            </Link>
                                         </td>
                                         <td className="table-cell">
                                             {fine.fineInfo.fine_type}
