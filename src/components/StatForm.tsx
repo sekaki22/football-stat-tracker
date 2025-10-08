@@ -16,6 +16,11 @@ interface MatchStats {
   }
 }
 
+interface Message {
+  type: 'success' | 'error'
+  text: string
+}
+
 interface StatFormProps {
   season: string
   onStatsUpdated?: () => void
@@ -26,7 +31,7 @@ export default function StatForm({ season, onStatsUpdated }: StatFormProps) {
   const [matchStats, setMatchStats] = useState<MatchStats>({})
   const [isLoading, setIsLoading] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
+  const [message, setMessage] = useState<Message | null>(null)
   const hasFetched = useRef(false)
 
   const fetchPlayers = async () => {
