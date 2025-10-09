@@ -18,7 +18,7 @@ export default async function RegelsPage() {
           
           {/* Boete overzicht table with generic styles */}
           <section className="mt-8">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+            <h2 className="text-2xl font-bold text-gray-100 dark:text-gray-100 mb-4">
               Boete Overzicht
             </h2>
             <div className="table-container">
