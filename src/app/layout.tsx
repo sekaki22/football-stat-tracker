@@ -5,9 +5,13 @@ import { Providers } from './providers'
 import Header from "@/components/Header"
 const inter = Inter({ subsets: ["latin"] });
 
+// Change image shown in browser tab to logo.jpeg
 export const metadata: Metadata = {
-  title: "Football Team Statistics",
-  description: "Track your team's goals and assists",
+  title: "Quick 1888 Zaterdag 2 teampagina",
+  description: "Bevat features voor teamstatistieken, boetes, corvee planning en meer",
+  icons: {
+    icon: "/logo.jpeg",
+  },
 };
 
 export default function RootLayout({

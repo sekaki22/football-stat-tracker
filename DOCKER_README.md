@@ -162,6 +162,34 @@ If you also need to do any database migrations because of a schema change you ca
 docker-compose exec app npx prisma migrate deploy
 ```
 
+### SSL Certificate Management
+
+#### Manual Certificate Renewal
+If your SSL certificate expires or you need to renew it manually:
+
+```bash
+# Quick renewal (recommended)
+docker-compose run --rm certbot renew
+docker-compose exec nginx nginx -s reload
+
+# Or use the automated script
+./scripts/renew-ssl.sh
+```
+
+#### Check Certificate Status
+To check when your certificate expires:
+
+```bash
+# Check certificate expiration date
+openssl s_client -connect statzz.nl:443 -servername statzz.nl < /dev/null 2>/dev/null | openssl x509 -noout -dates
+
+# Test HTTPS connection
+curl -I https://statzz.nl
+```
+
+#### Automatic Renewal
+Certificates are automatically renewed daily at 2:00 AM via cron job. The renewal script logs to `/var/log/certbot-renewal.log`.
+
 
 ### Switching Between Environments
 - **Local**: Uses `.env.local` (excluded from Docker)

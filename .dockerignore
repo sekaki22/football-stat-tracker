@@ -23,6 +23,10 @@
 !prisma
 !prisma/**
 
+# Include content directory
+!content
+!content/**
+
 # Include data directory (for database files)
 !data
 !data/**

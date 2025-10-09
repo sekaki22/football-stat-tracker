@@ -3,6 +3,9 @@ import { prisma } from "@/lib/prisma"
 import AdminFineSection from "@/components/AdminFineSection"
 import Link from "next/link";       
 
+// Force dynamic rendering to ensure fresh data
+export const dynamic = 'force-dynamic'
+
 export default async function BoetesPage() {
     // Fetch all fines with related data
     const fines = await prisma.fine.findMany({

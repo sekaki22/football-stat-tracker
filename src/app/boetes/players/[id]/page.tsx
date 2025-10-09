@@ -1,8 +1,9 @@
 import { prisma } from "@/lib/prisma"
 import { notFound } from "next/navigation"
 
-export default async function PlayerFinesPage({ params }: { params: { id: string } }) {
-    const playerId = parseInt(params.id)
+export default async function PlayerFinesPage({ params }: { params: Promise<{ id: string }> }) {
+    const { id } = await params
+    const playerId = parseInt(id)
     
     if (isNaN(playerId)) {
         notFound()
