@@ -51,22 +51,22 @@ export default function PlayerList({ players, currentSeason, onPlayerUpdated }: 
     <>
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
         <div className="table-container">
-          <table className="table-base">
+          <table className="table-base min-w-[560px] sm:w-full">
             <thead className="table-header">
               <tr>
-                <th className="table-header-cell-primary">Player</th>
+                <th className="table-header-cell-primary sticky left-0 z-10 bg-gray-50 dark:bg-gray-900">Player</th>
                 <th className="table-header-cell-primary text-right">Goals</th>
                 <th className="table-header-cell-primary text-right">Assists</th>
                 <th className="table-header-cell-primary text-right">Total</th>
                 {session?.user?.isAdmin && (
-                  <th className="table-header-cell-primary text-right">Actions</th>
+                  <th className="table-header-cell-primary text-right hidden sm:table-cell">Actions</th>
                 )}
               </tr>
             </thead>
             <tbody className="table-body">
               {players.map((player, index) => (
                 <tr key={player.id} className="table-row">
-                  <td className="table-cell">
+                  <td className="table-cell sticky left-0 z-0 bg-white dark:bg-gray-800 min-w-[180px]">
                     <div className="flex items-center">
                       <span className="text-xs text-gray-500 dark:text-gray-400 mr-3 w-6">
                         #{index + 1}
@@ -90,7 +90,7 @@ export default function PlayerList({ players, currentSeason, onPlayerUpdated }: 
                     </span>
                   </td>
                   {session?.user?.isAdmin && (
-                    <td className="table-cell-right">
+                    <td className="table-cell-right hidden sm:table-cell">
                       <div className="flex justify-end space-x-2">
                         <button
                           onClick={() => handleEdit(player)}

@@ -23,9 +23,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Providers>
-          <Header />
-          <hr className="border-rose-500" />
+          <Header/>
+          <div className="pt-6">
           {children}
+          </div>
         </Providers>
       </body>
     </html>

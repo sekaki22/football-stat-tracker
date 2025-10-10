@@ -4,6 +4,8 @@ import { useState } from 'react'
 import Link from "next/link"
 import SignInButton from "./SignInButton"
 
+
+
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
@@ -16,9 +18,9 @@ export default function Header() {
   }
 
   return (
-    <div className="mb-8">
+    <div className="fixed top-0 left-0 right-0 z-20 border-b-4 border-rose-500 bg-gray-900">
       {/* Desktop Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center px-4 py-3">
         {/* Logo and Title */}
         <div className="flex items-center gap-4">
           <Link href="/" onClick={closeMenu}>
@@ -31,7 +33,7 @@ export default function Header() {
 
         {/* Desktop Navigation */}
         <nav className="hidden md:block">
-          <ul className="flex items-center gap-4 text-gray-100 [&>li>a]:hover:text-rose-500 [&>li>a]:transition-colors [&>li>a]:duration-200">
+          <ul className="flex items-center gap-2 text-gray-100 [&>li>a]:hover:text-rose-500 [&>li>a]:transition-colors [&>li>a]:duration-200 [&>li>a]:bg-rose-900 [&>li>a]:p-2 [&>li>a]:rounded-md">
             <li>
               <Link href="/">Home</Link>
             </li>
