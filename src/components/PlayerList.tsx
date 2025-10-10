@@ -50,11 +50,11 @@ export default function PlayerList({ players, currentSeason, onPlayerUpdated }: 
   return (
     <>
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-        <div className="table-container">
+        <div className="table-container overflow-x-scroll">
           <table className="table-base min-w-[560px] sm:w-full">
             <thead className="table-header">
               <tr>
-                <th className="table-header-cell-primary sticky left-0 z-10 bg-gray-50 dark:bg-gray-900">Player</th>
+                <th className="table-header-cell-primary sticky left-0 z-10 bg-gray-50 dark:bg-gray-900 min-w-[120px] max-w-[160px]">Player</th>
                 <th className="table-header-cell-primary text-right">Goals</th>
                 <th className="table-header-cell-primary text-right">Assists</th>
                 <th className="table-header-cell-primary text-right">Total</th>
@@ -66,9 +66,9 @@ export default function PlayerList({ players, currentSeason, onPlayerUpdated }: 
             <tbody className="table-body">
               {players.map((player, index) => (
                 <tr key={player.id} className="table-row">
-                  <td className="table-cell sticky left-0 z-0 bg-white dark:bg-gray-800 min-w-[180px]">
-                    <div className="flex items-center">
-                      <span className="text-xs text-gray-500 dark:text-gray-400 mr-3 w-6">
+                  <td className="table-cell sticky left-0 z-10 bg-white dark:bg-gray-800 min-w-[120px] max-w-[160px] whitespace-normal break-words">
+                    <div className="flex items-start sm:items-center gap-2 flex-col sm:flex-row">
+                      <span className="text-xs text-gray-500 dark:text-gray-400 mr-0 sm:mr-3 w-5 sm:w-6">
                         #{index + 1}
                       </span>
                       <span className="font-medium">{player.name}</span>

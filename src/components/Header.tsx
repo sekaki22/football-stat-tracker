@@ -20,7 +20,7 @@ export default function Header() {
   return (
     <div className="fixed top-0 left-0 right-0 z-20 border-b-4 border-rose-500 bg-gray-900">
       {/* Desktop Header */}
-      <div className="flex justify-between items-center px-4 py-3">
+      <div className="flex justify-between items-center px-3 sm:px-4 py-2 sm:py-3">
         {/* Logo and Title */}
         <div className="flex items-center gap-4">
           <Link href="/" onClick={closeMenu}>

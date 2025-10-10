@@ -21,12 +21,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${inter.className} min-h-screen`}>
         <Providers>
           <Header/>
-          <div className="pt-6">
-          {children}
-          </div>
+          <main className="pt-20 ">
+            {children}
+          </main>
         </Providers>
       </body>
     </html>
