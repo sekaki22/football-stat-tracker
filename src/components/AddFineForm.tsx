@@ -93,7 +93,7 @@ export default function AddFineForm({ players, fineTypes }: AddFineFormProps) {
                     id="player"
                     value={selectedPlayer}
                     onChange={(e) => setSelectedPlayer(e.target.value ? Number(e.target.value) : '')}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 text-black dark:text-white"
                     required
                 >
                     <option value="">Selecteer een speler...</option>
@@ -114,7 +114,7 @@ export default function AddFineForm({ players, fineTypes }: AddFineFormProps) {
                     id="fineType"
                     value={selectedFineType}
                     onChange={(e) => setSelectedFineType(e.target.value ? Number(e.target.value) : '')}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 text-black dark:text-white"
                     required
                 >
                     <option value="">Selecteer een boete type...</option>
@@ -146,7 +146,7 @@ export default function AddFineForm({ players, fineTypes }: AddFineFormProps) {
                         placeholder={defaultAmount.toString()}
                         min="0"
                         step="0.01"
-                        className="w-full pl-8 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                        className="w-full pl-8 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 text-black dark:text-white"
                     />
                 </div>
                 <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
