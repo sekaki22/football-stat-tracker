@@ -1,14 +1,10 @@
 import { prisma } from '@/lib/prisma'
 import Link from 'next/link'
+import { calculateCurrentWeek } from '@/lib/weekCalculator'
 
 export default async function CorveePage(){
+    const currentWeek = calculateCurrentWeek(new Date())
     const currentYear = new Date().getFullYear()
-
-    // Calculate weekofyear
-    const now = new Date()
-    const startOfYear = new Date(currentYear, 0, 1)
-    const pastDaysOfYear = (now.getTime() - startOfYear.getTime()) / 86400000
-    const currentWeek = Math.ceil((pastDaysOfYear + startOfYear.getDay() + 1) / 7)
 
     const teamInCharge = await prisma.corveePlanning.findFirst({
         select: {team_letter: true},
