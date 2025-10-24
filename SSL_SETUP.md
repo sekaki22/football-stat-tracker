@@ -94,11 +94,68 @@ curl -I https://statzz.nl
 
 ### Manual Certificate Renewal
 
+#### Quick Renewal (Recommended)
 To manually renew certificates:
 
 ```bash
+# Navigate to your project directory
+cd /home/selim/repos/football-stat-tracker
+
+# Renew certificates
 docker-compose run --rm certbot renew
-docker-compose restart nginx
+
+# Reload nginx to use new certificates
+docker-compose exec nginx nginx -s reload
+```
+
+#### Detailed Manual Renewal Process
+
+1. **Check Certificate Status:**
+   ```bash
+   # Check current certificate expiration
+   openssl s_client -connect statzz.nl:443 -servername statzz.nl < /dev/null 2>/dev/null | openssl x509 -noout -dates
+   
+   # Check local certificate files
+   sudo ls -la certbot/conf/live/statzz.nl/
+   ```
+
+2. **Renew Certificates:**
+   ```bash
+   # Run renewal command
+   docker-compose run --rm certbot renew
+   
+   # If renewal fails, check logs
+   docker-compose logs certbot
+   ```
+
+3. **Reload Nginx:**
+   ```bash
+   # Test nginx configuration
+   docker-compose exec nginx nginx -t
+   
+   # Reload nginx configuration
+   docker-compose exec nginx nginx -s reload
+   ```
+
+4. **Verify Renewal:**
+   ```bash
+   # Check new certificate expiration
+   openssl s_client -connect statzz.nl:443 -servername statzz.nl < /dev/null 2>/dev/null | openssl x509 -noout -dates
+   
+   # Test HTTPS connection
+   curl -I https://statzz.nl
+   ```
+
+#### Using the Automated Renewal Script
+
+You can also use the automated renewal script:
+
+```bash
+# Run the renewal script manually
+./scripts/renew-ssl.sh
+
+# Check renewal logs
+tail -f /var/log/certbot-renewal.log
 ```
 
 ### Automatic Renewal
