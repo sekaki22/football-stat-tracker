@@ -23,21 +23,18 @@ interface AddFineFormProps {
 
 export default function AddFineForm({ players, fineTypes, onSuccess }: AddFineFormProps) {
     const [selectedPlayer, setSelectedPlayer] = useState<number | ''>('')
-    const [selectedFineType, setSelectedFineType] = useState<number | ''>('')
-    const [customAmount, setCustomAmount] = useState<number | ''>('')
+    const [Amount, setAmount] = useState<number | ''>('')
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
     
     const router = useRouter()
 
-    const selectedFineTypeData = fineTypes.find(ft => ft.id === selectedFineType)
-    const defaultAmount = selectedFineTypeData?.fine_amount || 0
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         
-        if (!selectedPlayer || !selectedFineType) {
-            setMessage({ type: 'error', text: 'Selecteer een speler en boete type' })
+        if (!selectedPlayer) {
+            setMessage({ type: 'error', text: 'Selecteer een speler en een bedrag' })
             return
         }
 
@@ -46,7 +43,7 @@ export default function AddFineForm({ players, fineTypes, onSuccess }: AddFineFo
 
         try {
             console.log('📤 Sending fine request...')
-            const response = await fetch('/api/fines', {
+            const response = await fetch('/api/fines/repayment', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -54,8 +51,7 @@ export default function AddFineForm({ players, fineTypes, onSuccess }: AddFineFo
                 credentials: 'include',  // Add credentials for session handling
                 body: JSON.stringify({
                     player_id: selectedPlayer,
-                    fine_type_id: selectedFineType,
-                    fine_amount: customAmount || defaultAmount
+                    repay_amount: Amount
                 }),
             })
 
@@ -69,8 +65,7 @@ export default function AddFineForm({ players, fineTypes, onSuccess }: AddFineFo
             if (response.ok) {
                 setMessage({ type: 'success', text: 'Boete succesvol toegevoegd!' })
                 setSelectedPlayer('')
-                setSelectedFineType('')
-                setCustomAmount('')
+                setAmount('')
                 router.refresh() // Refresh the page to show updated data
                 
                 // Close modal after successful submission
@@ -113,33 +108,9 @@ export default function AddFineForm({ players, fineTypes, onSuccess }: AddFineFo
                 </select>
             </div>
 
-            {/* Fine Type Selection */}
-            <div>
-                <label htmlFor="fineType" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Boete Type
-                </label>
-                <select
-                    id="fineType"
-                    value={selectedFineType}
-                    onChange={(e) => setSelectedFineType(e.target.value ? Number(e.target.value) : '')}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 text-black dark:text-white"
-                    required
-                >
-                    <option value="">Selecteer een boete type...</option>
-                    {fineTypes.map((fineType) => (
-                        <option key={fineType.id} value={fineType.id}>
-                            {fineType.fine_type} - €{fineType.fine_amount}
-                        </option>
-                    ))}
-                </select>
-                {selectedFineTypeData && (
-                    <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                        {selectedFineTypeData.fine_description}
-                    </p>
-                )}
-            </div>
+        
 
-            {/* Custom Amount */}
+            {/* Repayment Amount */}
             <div>
                 <label htmlFor="customAmount" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Aangepast Bedrag (optioneel)
@@ -149,17 +120,14 @@ export default function AddFineForm({ players, fineTypes, onSuccess }: AddFineFo
                     <input
                         type="number"
                         id="customAmount"
-                        value={customAmount}
-                        onChange={(e) => setCustomAmount(e.target.value ? Number(e.target.value) : '')}
-                        placeholder={defaultAmount.toString()}
+                        value={Amount}
+                        onChange={(e) => setAmount(e.target.value ? Number(e.target.value) : '')}
+                        placeholder={Amount.toString()}
                         min="0"
                         step="0.01"
                         className="w-full pl-8 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 text-black dark:text-white"
                     />
                 </div>
-                <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                    Standaard bedrag: €{defaultAmount}
-                </p>
             </div>
 
             {/* Message Display */}
@@ -179,7 +147,7 @@ export default function AddFineForm({ players, fineTypes, onSuccess }: AddFineFo
                 disabled={isSubmitting}
                 className="w-full bg-red-600 hover:bg-red-700 disabled:bg-red-400 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
             >
-                {isSubmitting ? 'Bezig met toevoegen...' : 'Boete Toevoegen'}
+                {isSubmitting ? 'Bezig met toevoegen...' : 'Aflossing Toevoegen'}
             </button>
         </form>
     )

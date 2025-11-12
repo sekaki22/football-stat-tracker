@@ -2,12 +2,13 @@
 import { prisma } from "@/lib/prisma"
 import AdminFineSection from "@/components/AdminFineSection"
 import Link from "next/link";       
+import PlayerFineTable from "@/components/PlayerFineTable";
 
 // Force dynamic rendering to ensure fresh data
 export const dynamic = 'force-dynamic'
 
 export default async function BoetesPage() {
-    // Fetch all fines with related data
+    // Fetch all fines with related data (exclude repayments where fine_amount = 0)
     const fines = await prisma.fine.findMany({
         include: {
             player: true,
@@ -17,6 +18,11 @@ export default async function BoetesPage() {
             createdAt: 'desc'
         }
     })
+
+
+
+
+
 
     // Always fetch players and fine types for the client component to handle
     const players = await prisma.player.findMany({
@@ -34,6 +40,12 @@ export default async function BoetesPage() {
     // Calculate total fines amount
     const totalFinesAmount = fines.reduce((sum, fine) => sum + fine.fine_amount, 0)
 
+    // Calculate amount repaid
+    const totalRepaid = fines.reduce((sum, repayment) => sum + repayment.fine_amount_repaid, 0)
+
+    // Amount unpaid
+    const totalUnpaid = totalFinesAmount - totalRepaid
+
     // Calculate fines per player
     const finesPerPlayer = fines.reduce((acc, fine) => {
         const playerId = fine.player_id
@@ -41,19 +53,29 @@ export default async function BoetesPage() {
             acc[playerId] = {
                 player: fine.player,
                 totalAmount: 0,
+                totalRepaid: 0,
                 fineCount: 0,
-                fines: []
+                fines: [],
+                repayments: []
             }
         }
         acc[playerId].totalAmount += fine.fine_amount
-        acc[playerId].fineCount += 1
-        acc[playerId].fines.push(fine)
+        acc[playerId].totalRepaid += fine.fine_amount_repaid
+        
+        if (fine.fine_amount_repaid > 0) {
+            acc[playerId].repayments.push(fine)
+        } else {
+            acc[playerId].fines.push(fine)
+            acc[playerId].fineCount += 1
+        }
         return acc
     }, {} as Record<number, {
         player: any,
         totalAmount: number,
+        totalRepaid: number,
         fineCount: number,
         fines: any[]
+        repayments: any[]
     }>)
 
     const playersWithFines = Object.values(finesPerPlayer).sort((a, b) => b.totalAmount - a.totalAmount)
@@ -72,10 +94,10 @@ export default async function BoetesPage() {
                 </div>
 
                 {/* Stats Cards */}
-                <div className="grid gap-6 md:grid-cols-3 mb-8">
-                    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+                <div className="grid gap-6 md:grid-cols-6 mb-8">
+                    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 col-span-2">
                         <div className="text-center">
-                            <div className="text-3xl font-bold text-red-600 dark:text-red-400">
+                            <div className="text-3xl font-bold text-blue-600 dark:text-blue-600">
                                 €{totalFinesAmount}
                             </div>
                             <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">
@@ -83,8 +105,30 @@ export default async function BoetesPage() {
                             </div>
                         </div>
                     </div>
+
+                    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 col-span-2">
+                        <div className="text-center">
+                            <div className="text-3xl font-bold text-green-600 dark:text-green-600">
+                                €{totalRepaid}
+                            </div>
+                            <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                                In de pot
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 col-span-2">
+                        <div className="text-center">
+                            <div className="text-3xl font-bold text-red-600 dark:text-red-600">
+                                €{totalUnpaid}
+                            </div>
+                            <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                                Openstaand
+                            </div>
+                        </div>
+                    </div>
                     
-                    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+                    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 col-span-3">
                         <div className="text-center">
                             <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">
                                 {fines.length}
@@ -95,7 +139,7 @@ export default async function BoetesPage() {
                         </div>
                     </div>
                     
-                    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+                    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 col-span-3">
                         <div className="text-center">
                             <div className="text-3xl font-bold text-green-600 dark:text-green-400">
                                 {playersWithFines.length}
@@ -152,64 +196,7 @@ export default async function BoetesPage() {
                 </div>
 
                 {/* All Fines per Player */}
-                <div className="mt-8 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">
-                        Boetes per Speler
-                    </h2>
-                    
-                    <div className="table-container">
-                        <table className="table-base">
-                            <thead className="table-header">
-                                <tr>
-                                    <th className="table-header-cell-primary">Speler</th>
-                                    <th className="table-header-cell-primary">Aantal Boetes</th>
-                                    <th className="table-header-cell-primary">Totaal Bedrag</th>
-                                    <th className="table-header-cell-primary">Laatste Boete</th>
-                                </tr>
-                            </thead>
-                            <tbody className="table-body">
-                                {playersWithFines.map((playerData) => {
-                                    const latestFine = playerData.fines.sort((a, b) => 
-                                        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-                                    )[0]
-                                    
-                                    return (
-                                        <tr key={playerData.player.id} className="table-row">
-                                            <td className="table-cell">
-                                                <Link
-                                                    href={`/boetes/players/${playerData.player.id}`}
-                                                    className="font-medium text-gray-900 dark:text-gray-100 hover:text-rose-500 dark:hover:text-rose-400"
-                                                >
-                                                    {playerData.player.name}
-                                                </Link>
-                                            </td>
-                                            <td className="table-cell">
-                                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-                                                    {playerData.fineCount}
-                                                </span>
-                                            </td>
-                                            <td className="table-cell">
-                                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
-                                                    €{playerData.totalAmount}
-                                                </span>
-                                            </td>
-                                            <td className="table-cell-secondary">
-                                                {latestFine ? (
-                                                    <div className="text-sm">
-                                                        <div>{latestFine.fineInfo.fine_type}</div>
-                                                        <div className="text-xs text-gray-500 dark:text-gray-400">
-                                                            {new Date(latestFine.createdAt).toLocaleDateString('nl-NL')}
-                                                        </div>
-                                                    </div>
-                                                ) : '-'}
-                                            </td>
-                                        </tr>
-                                    )
-                                })}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                <PlayerFineTable playersWithFines={playersWithFines} />
 
                 {/* Recent Fines */}
                 <div className="mt-8 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
@@ -228,7 +215,7 @@ export default async function BoetesPage() {
                                 </tr>
                             </thead>
                             <tbody className="table-body">
-                                {fines.slice(0, 10).map((fine) => (
+                                {fines.filter(fine => fine.fine_amount_repaid === 0).slice(0, 10).map((fine) => (
                                     <tr key={fine.id} className="table-row">
                                         <td className="table-cell-secondary">
                                             {new Date(fine.createdAt).toLocaleDateString('nl-NL')}

@@ -77,8 +77,9 @@ model FineInformation {
 
 model Fine {
   id           Int             @id @default(autoincrement())
-  fine_type_id Int
-  fine_amount  Int             @default(0)
+  fine_type_id  Int 
+  fine_amount   Int             @default(0) 
+  fine_amount_repaid Int       @default(0) 
   player_id    Int
   createdAt    DateTime        @default(now())
   updatedAt    DateTime        @updatedAt

@@ -2,6 +2,9 @@ import { prisma } from '@/lib/prisma'
 import Link from 'next/link'
 import { calculateCurrentWeek } from '@/lib/weekCalculator'
 
+// Force dynamic rendering to ensure current week/year are always fresh
+export const dynamic = 'force-dynamic'
+
 export default async function CorveePage(){
     const currentWeek = calculateCurrentWeek(new Date())
     const currentYear = new Date().getFullYear()

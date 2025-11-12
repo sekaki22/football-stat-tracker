@@ -1,7 +1,10 @@
 'use client'
 
 import { useSession } from 'next-auth/react'
+import { useState } from 'react'
 import AddFineForm from './AddFineForm'
+import Modal from './Modal'
+import AddRepaymentForm from './AddRepaymentForm'
 
 interface Player {
     id: number
@@ -22,12 +25,14 @@ interface AdminFineSectionProps {
 
 export default function AdminFineSection({ players, fineTypes }: AdminFineSectionProps) {
     const { data: session, status } = useSession()
-    
+    const [fineModalIsOpen, setFineModalIsOpen] = useState(false)
+    const [repaiModalIsOpen, setRepaiModalIsOpen] = useState(false)
+
     if (status === 'loading') {
         return (
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">
-                    Nieuwe Boete Toevoegen
+                 Boetes beheren
                 </h2>
                 <div className="text-center py-8">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
@@ -77,9 +82,37 @@ export default function AdminFineSection({ players, fineTypes }: AdminFineSectio
     return (
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">
-                Nieuwe Boete Toevoegen
+                Boetes beheren
             </h2>
-            <AddFineForm players={players} fineTypes={fineTypes} />
+            <button onClick={() => setFineModalIsOpen(true)}
+             className="w-full bg-red-600 hover:bg-red-700 disabled:bg-red-400 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
+                Boete toevoegen
+            </button>
+            <button onClick={() => setRepaiModalIsOpen(true)}
+            className="w-full bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 mt-2">
+                Aflossing toevoegen
+            </button>
+
+            <Modal
+            isOpen={fineModalIsOpen}
+            onClose={() => setFineModalIsOpen(false)}
+            title="Boete toevoegen"
+            >
+            <AddFineForm 
+                players={players} 
+                fineTypes={fineTypes} 
+                onSuccess={() => setFineModalIsOpen(false)}
+            />
+            </Modal>
+            <Modal
+            isOpen={repaiModalIsOpen}
+            onClose={() => setRepaiModalIsOpen(false)}
+            title="Aflossing toevoegen"
+            >
+            <AddRepaymentForm players={players} fineTypes={fineTypes} onSuccess={() => setRepaiModalIsOpen(false)} />
+            </Modal>
         </div>
     )
 }
+
+//<AddFineForm players={players} fineTypes={fineTypes} />
