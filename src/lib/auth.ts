@@ -2,7 +2,7 @@ import GoogleProvider from "next-auth/providers/google"
 import { NextAuthOptions } from 'next-auth'
 
 export const authOptions: NextAuthOptions = {
-  debug: true, // Enable debug logs
+  debug: false, // Enable debug logs
   secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: "jwt", // Use JWT for simpler setup
