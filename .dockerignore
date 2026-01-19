@@ -11,6 +11,11 @@
 !Dockerfile
 !.dockerignore
 
+# Include Sentry configuration files
+!sentry.client.config.ts
+!sentry.server.config.ts
+!sentry.edge.config.ts
+
 # Include source code
 !src
 !src/**
