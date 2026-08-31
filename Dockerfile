@@ -6,20 +6,19 @@ RUN apk add --no-cache sqlite
 
 WORKDIR /app
 
-# Copy package files and install deps
+# Copy package files + prisma schema BEFORE npm install
+# (postinstall runs `prisma generate` and needs schema.prisma)
 COPY package*.json ./
-RUN npm install
-
-
-# Copy Prisma schema and generate client
 COPY prisma ./prisma
-RUN npx prisma generate
+RUN npm install
 
 # Copy the rest of your app source
 COPY . .
 
+# Verify schema exists before build
+RUN test -f prisma/schema.prisma
 
-# Build your Next.js app
+# Build your Next.js app (runs prisma generate + next build)
 RUN npm run build
 
 # Stage 2: Production image
@@ -37,6 +36,9 @@ COPY --from=builder /app/public ./public
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/content ./content
+
+# Verify runtime image has schema for migrate deploy
+RUN test -f prisma/schema.prisma
 
 # Expose port your app runs on
 EXPOSE 3000

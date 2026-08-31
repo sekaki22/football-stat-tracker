@@ -2,8 +2,6 @@ import { notFound } from 'next/navigation'
 import { GalleryService } from '@/lib/services/galleryService'
 import GalleryAlbumDetail from '@/components/GalleryAlbumDetail'
 
-export const dynamic = 'force-dynamic'
-
 export default async function FotogallerijAlbumPage({
   params,
 }: {

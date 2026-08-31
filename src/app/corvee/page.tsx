@@ -3,8 +3,6 @@ import Link from 'next/link'
 import { calculateCurrentWeek } from '@/lib/weekCalculator'
 import { CorveeService } from '@/lib/services/corveeService'
 
-export const dynamic = 'force-dynamic'
-
 export default async function CorveePage() {
   const now = new Date()
   const currentWeek = calculateCurrentWeek(now)

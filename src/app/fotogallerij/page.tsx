@@ -1,8 +1,6 @@
 import { GalleryService } from '@/lib/services/galleryService'
 import GalleryView from '@/components/GalleryView'
 
-export const dynamic = 'force-dynamic'
-
 export default async function FotogallerijPage() {
   const albums = await GalleryService.getAlbums()
 
