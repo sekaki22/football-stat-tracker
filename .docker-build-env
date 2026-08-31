@@ -1,0 +1,14 @@
+# Docker BuildKit Fix - Source this file before building
+# Usage: source .docker-build-env && docker-compose build
+
+# Create dedicated temp directory for Docker builds
+export DOCKER_TMPDIR="${HOME}/docker-tmp"
+mkdir -p "$DOCKER_TMPDIR"
+chmod 1777 "$DOCKER_TMPDIR"
+
+# Disable BuildKit to avoid metadata file errors
+export TMPDIR="$DOCKER_TMPDIR"
+export DOCKER_BUILDKIT=0
+export COMPOSE_DOCKER_CLI_BUILD=0
+
+echo "Docker build environment configured (BuildKit disabled)"
