@@ -1,15 +1,12 @@
 import { prisma } from '@/lib/prisma'
 import { Player } from '@prisma/client'
+import { SeasonService } from '@/lib/services/seasonService'
 
 // Types for raw SQL query results
 type SeasonStatsRow = {
   playerId: number
   goals: number
   assists: number
-}
-
-type SeasonRow = {
-  season: string
 }
 
 export class PlayerService {
@@ -20,28 +17,7 @@ export class PlayerService {
   }
 
   static async getPlayersBySeason(season: string): Promise<Player[]> {
-    // Get all players first
-    const players = await prisma.player.findMany()
-    
-    // Get season-specific stats for the requested season
-    const seasonStats = await prisma.$queryRaw<SeasonStatsRow[]>`
-      SELECT playerId, goals, assists 
-      FROM SeasonStats 
-      WHERE season = ${season}
-    `
-
-    return players.map(player => {
-      const stats = seasonStats.find(s => s.playerId === player.id)
-      return {
-        ...player,
-        goals: stats?.goals || 0,
-        assists: stats?.assists || 0
-      }
-    }).sort((a, b) => {
-      const aTotal = a.goals + a.assists
-      const bTotal = b.goals + b.assists
-      return bTotal - aTotal
-    })
+    return SeasonService.getPlayersBySeason(season)
   }
 
   static async addGoal(playerId: number, season: string): Promise<Player> {
@@ -86,21 +62,59 @@ export class PlayerService {
     return player
   }
 
-  static async createPlayer(name: string, goals: number = 0, assists: number = 0): Promise<Player> {
+  static async createPlayer(
+    name: string,
+    goals: number = 0,
+    assists: number = 0,
+    nickname?: string | null
+  ): Promise<Player> {
     return prisma.player.create({
       data: {
         name,
+        nickname: nickname?.trim() || null,
         goals,
-        assists
-      }
+        assists,
+      },
     })
   }
 
-  static async updatePlayer(playerId: number, data: { goals?: number; assists?: number }): Promise<Player> {
+  static async updatePlayer(
+    playerId: number,
+    data: {
+      name?: string
+      nickname?: string | null
+      goals?: number
+      assists?: number
+    }
+  ): Promise<Player> {
+    const updateData: {
+      name?: string
+      nickname?: string | null
+      goals?: number
+      assists?: number
+    } = {}
+
+    if (data.name !== undefined) {
+      updateData.name = data.name.trim()
+    }
+    if (data.nickname !== undefined) {
+      updateData.nickname = data.nickname?.trim() || null
+    }
+    if (data.goals !== undefined) {
+      updateData.goals = data.goals
+    }
+    if (data.assists !== undefined) {
+      updateData.assists = data.assists
+    }
+
     return prisma.player.update({
       where: { id: playerId },
-      data
+      data: updateData,
     })
+  }
+
+  static async getPlayerById(playerId: number): Promise<Player | null> {
+    return prisma.player.findUnique({ where: { id: playerId } })
   }
 
   static async deletePlayer(playerId: number): Promise<Player> {
@@ -111,25 +125,16 @@ export class PlayerService {
 
   // Get all available seasons
   static async getAvailableSeasons(): Promise<string[]> {
-    const seasons = await prisma.$queryRaw<SeasonRow[]>`
-      SELECT DISTINCT season 
-      FROM SeasonStats 
-      ORDER BY season
-    `
-    
-    return seasons.map(s => s.season)
+    return SeasonService.getAvailableSeasons()
   }
 
-  // Initialize a new season (creates a dummy entry to ensure the season exists)
+  // Initialize a new season (legacy - prefer SeasonService.createSeason)
   static async initializeSeason(season: string): Promise<void> {
-    // Get the first player to create a dummy entry
-    const firstPlayer = await prisma.player.findFirst()
-    
-    if (firstPlayer) {
-      await prisma.$executeRaw`
-        INSERT OR IGNORE INTO SeasonStats (playerId, season, goals, assists, createdAt, updatedAt)
-        VALUES (${firstPlayer.id}, ${season}, 0, 0, datetime('now'), datetime('now'))
-      `
+    const players = await prisma.player.findMany()
+    if (players.length === 0) return
+
+    for (const player of players) {
+      await SeasonService.addPlayerToSeason(player.id, season)
     }
   }
 

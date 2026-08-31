@@ -30,7 +30,7 @@ export async function GET(request: Request) {
 export async function POST(request: NextRequest) {
   return withAdminAuth(request, async () => {
   try {
-    const { name, goals, assists } = await request.json()
+    const { name, goals, assists, season, nickname } = await request.json()
 
     if (!name) {
       return NextResponse.json(
@@ -42,8 +42,15 @@ export async function POST(request: NextRequest) {
     const player = await PlayerService.createPlayer(
       name,
       goals ? parseInt(goals) : 0,
-      assists ? parseInt(assists) : 0
+      assists ? parseInt(assists) : 0,
+      nickname
     )
+
+    if (season) {
+      const { SeasonService } = await import('@/lib/services/seasonService')
+      await SeasonService.addPlayerToSeason(player.id, season)
+    }
+
     return NextResponse.json(player)
   } catch (error) {
     console.error('Error creating player:', error)

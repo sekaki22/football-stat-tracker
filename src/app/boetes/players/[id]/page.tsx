@@ -23,7 +23,7 @@ export default async function PlayerFinesPage({ params }: { params: Promise<{ id
             
             // Get player's fines with fine type information
             prisma.fine.findMany({
-                where: { player_id: playerId },
+                where: { player_id: playerId, active: true },
                 include: {
                     fineInfo: true
                 },

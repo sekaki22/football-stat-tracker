@@ -5,11 +5,13 @@ import { useState } from 'react'
 
 interface AddPlayerFormProps {
   onAdded?: () => void
+  season?: string
 }
 
-export default function AddPlayerForm({ onAdded }: AddPlayerFormProps) {
+export default function AddPlayerForm({ onAdded, season }: AddPlayerFormProps) {
   const router = useRouter()
   const [name, setName] = useState('')
+  const [nickname, setNickname] = useState('')
   const [goals, setGoals] = useState('0')
   const [assists, setAssists] = useState('0')
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -27,14 +29,17 @@ export default function AddPlayerForm({ onAdded }: AddPlayerFormProps) {
         },
         body: JSON.stringify({
           name,
+          nickname: nickname.trim() || null,
           goals: parseInt(goals),
           assists: parseInt(assists),
+          season,
         }),
       })
 
       if (response.ok) {
         router.refresh()
         setName('')
+        setNickname('')
         setGoals('0')
         setAssists('0')
         if (onAdded) onAdded()
@@ -60,6 +65,19 @@ export default function AddPlayerForm({ onAdded }: AddPlayerFormProps) {
             onChange={(e) => setName(e.target.value)}
             className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
             required
+          />
+        </div>
+        <div>
+          <label htmlFor="nickname" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            Bijnaam (optioneel)
+          </label>
+          <input
+            type="text"
+            id="nickname"
+            value={nickname}
+            onChange={(e) => setNickname(e.target.value)}
+            placeholder="Wordt gebruikt in corvee planning"
+            className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           />
         </div>
         <div>

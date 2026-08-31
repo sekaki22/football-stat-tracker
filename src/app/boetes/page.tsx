@@ -10,6 +10,7 @@ export const dynamic = 'force-dynamic'
 export default async function BoetesPage() {
     // Fetch all fines with related data (exclude repayments where fine_amount = 0)
     const fines = await prisma.fine.findMany({
+        where: { active: true },
         include: {
             player: true,
             fineInfo: true

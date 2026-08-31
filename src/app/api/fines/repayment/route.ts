@@ -50,7 +50,8 @@ export async function POST(request: NextRequest) {
                     player_id: player_id,
                     fine_type_id: repaymentFineType.id,
                     fine_amount: 0,
-                    fine_amount_repaid: repay_amount
+                    fine_amount_repaid: repay_amount,
+                    active: true,
                 },
                 include: {
                     player: true,

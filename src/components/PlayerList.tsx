@@ -17,8 +17,6 @@ export default function PlayerList({ players, currentSeason, onPlayerUpdated }: 
   const { data: session } = useSession()
   const [deletingId, setDeletingId] = useState<number | null>(null)
   const [editingPlayer, setEditingPlayer] = useState<Player | null>(null)
-  const [showAddPlayer, setShowAddPlayer] = useState(false)
-  const [showAddGoal, setShowAddGoal] = useState(false)
 
   async function handleDelete(playerId: number) {
     setDeletingId(playerId)
@@ -42,56 +40,73 @@ export default function PlayerList({ players, currentSeason, onPlayerUpdated }: 
   }
 
   function handleSave() {
+    router.refresh()
     if (onPlayerUpdated) {
       onPlayerUpdated()
     }
   }
 
+  const isAdmin = session?.user?.isAdmin
+
   return (
     <>
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-        <div className="table-container overflow-x-scroll">
-          <table className="table-base min-w-[560px] sm:w-full">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 min-w-0">
+        <div className="table-container">
+          <table className="table-base w-full table-fixed">
+            <colgroup>
+              <col className={isAdmin ? 'w-[34%]' : 'w-[46%]'} />
+              <col className="w-[18%]" />
+              <col className="w-[18%]" />
+              <col className="w-[18%]" />
+              {isAdmin && <col className="w-[12%]" />}
+            </colgroup>
             <thead className="table-header">
               <tr>
-                <th className="table-header-cell-primary sticky left-0 z-10 bg-gray-50 dark:bg-gray-900 min-w-[120px] max-w-[160px]">Player</th>
-                <th className="table-header-cell-primary text-right">Goals</th>
-                <th className="table-header-cell-primary text-right">Assists</th>
-                <th className="table-header-cell-primary text-right">Total</th>
-                {session?.user?.isAdmin && (
-                  <th className="table-header-cell-primary text-right hidden sm:table-cell">Actions</th>
+                <th className="table-header-cell-primary">Player</th>
+                <th className="table-header-cell-primary text-center">Goals</th>
+                <th className="table-header-cell-primary text-center">Assists</th>
+                <th className="table-header-cell-primary text-center">Total</th>
+                {isAdmin && (
+                  <th className="table-header-cell-primary text-center hidden sm:table-cell">Actions</th>
                 )}
               </tr>
             </thead>
             <tbody className="table-body">
               {players.map((player, index) => (
                 <tr key={player.id} className="table-row">
-                  <td className="table-cell sticky left-0 z-10 bg-white dark:bg-gray-800 min-w-[120px] max-w-[160px] whitespace-normal break-words">
-                    <div className="flex items-start sm:items-center gap-2 flex-col sm:flex-row">
-                      <span className="text-xs text-gray-500 dark:text-gray-400 mr-0 sm:mr-3 w-5 sm:w-6">
+                  <td className="table-cell whitespace-normal break-words">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className="text-xs text-gray-500 dark:text-gray-400 shrink-0 w-6">
                         #{index + 1}
                       </span>
-                      <span className="font-medium">{player.name}</span>
+                      <div className="min-w-0">
+                        <span className="font-medium block truncate">{player.name}</span>
+                        {player.nickname && (
+                          <span className="text-xs text-gray-500 dark:text-gray-400 block truncate">
+                            ({player.nickname})
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </td>
-                  <td className="table-cell-right">
+                  <td className="table-cell-center">
                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
                       {player.goals}
                     </span>
                   </td>
-                  <td className="table-cell-right">
+                  <td className="table-cell-center">
                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
                       {player.assists}
                     </span>
                   </td>
-                  <td className="table-cell-right">
+                  <td className="table-cell-center">
                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-rose-100 text-rose-800 dark:bg-rose-900 dark:text-rose-200">
                       {player.goals + player.assists}
                     </span>
                   </td>
-                  {session?.user?.isAdmin && (
-                    <td className="table-cell-right hidden sm:table-cell">
-                      <div className="flex justify-end space-x-2">
+                  {isAdmin && (
+                    <td className="table-cell-center hidden sm:table-cell">
+                      <div className="flex flex-col items-center gap-1">
                         <button
                           onClick={() => handleEdit(player)}
                           className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 text-sm font-medium"
@@ -134,4 +149,4 @@ export default function PlayerList({ players, currentSeason, onPlayerUpdated }: 
       )}
     </>
   )
-} 
+}

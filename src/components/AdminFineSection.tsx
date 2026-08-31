@@ -1,6 +1,7 @@
 'use client'
 
 import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import AddFineForm from './AddFineForm'
 import Modal from './Modal'
@@ -24,9 +25,36 @@ interface AdminFineSectionProps {
 }
 
 export default function AdminFineSection({ players, fineTypes }: AdminFineSectionProps) {
+    const router = useRouter()
     const { data: session, status } = useSession()
     const [fineModalIsOpen, setFineModalIsOpen] = useState(false)
     const [repaiModalIsOpen, setRepaiModalIsOpen] = useState(false)
+    const [isResetting, setIsResetting] = useState(false)
+    const [resetError, setResetError] = useState('')
+
+    async function handleResetFinePot() {
+        if (!confirm('Weet je zeker dat je de boetepot wilt resetten? Alle huidige boetes worden gearchiveerd.')) {
+            return
+        }
+
+        setIsResetting(true)
+        setResetError('')
+
+        try {
+            const response = await fetch('/api/fines/reset', { method: 'POST' })
+
+            if (!response.ok) {
+                const data = await response.json()
+                throw new Error(data.error || 'Kon boetepot niet resetten')
+            }
+
+            router.refresh()
+        } catch (err) {
+            setResetError(err instanceof Error ? err.message : 'Kon boetepot niet resetten')
+        } finally {
+            setIsResetting(false)
+        }
+    }
 
     if (status === 'loading') {
         return (
@@ -92,6 +120,16 @@ export default function AdminFineSection({ players, fineTypes }: AdminFineSectio
             className="w-full bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 mt-2">
                 Aflossing toevoegen
             </button>
+            <button
+                onClick={handleResetFinePot}
+                disabled={isResetting}
+                className="w-full bg-gray-700 hover:bg-gray-800 disabled:bg-gray-500 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 mt-2"
+            >
+                {isResetting ? 'Resetten...' : 'Boetepot resetten'}
+            </button>
+            {resetError && (
+                <p className="mt-2 text-sm text-red-600 dark:text-red-400">{resetError}</p>
+            )}
 
             <Modal
             isOpen={fineModalIsOpen}

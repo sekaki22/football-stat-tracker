@@ -1,66 +1,28 @@
 'use client'
 
 import { useState } from 'react'
-import Link from "next/link"
-import SignInButton from "./SignInButton"
-
-
+import Link from 'next/link'
+import SignInButton from './SignInButton'
+import { NAV_LINKS } from '@/lib/navLinks'
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen)
-  }
-
-  const closeMenu = () => {
-    setIsMenuOpen(false)
-  }
+  const closeMenu = () => setIsMenuOpen(false)
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-20 border-b-4 border-rose-500 bg-gray-900">
-      {/* Desktop Header */}
-      <div className="flex justify-between items-center px-3 sm:px-4 py-2 sm:py-3">
-        {/* Logo and Title */}
-        <div className="flex items-center gap-4">
-          <Link href="/" onClick={closeMenu}>
-            <img src="/logo.jpeg" alt="Logo" className="h-10 w-10 rounded" />
-          </Link>
-          <h2 className="text-2xl md:text-4xl font-bold text-gray-100">
-            Quick 1888 Zaterdag 2 teampagina
-          </h2>
-        </div>
+    <header className="md:hidden fixed top-0 left-0 right-0 z-20 border-b-4 border-rose-500 bg-gray-900">
+      <div className="flex justify-between items-center px-3 py-2">
+        <Link href="/" onClick={closeMenu} className="flex items-center gap-3 min-w-0">
+          <img src="/logo.jpeg" alt="Logo" className="h-9 w-9 rounded shrink-0" />
+          <span className="text-base font-bold text-gray-100 truncate">
+            Quick 1888 Zaterdag 2
+          </span>
+        </Link>
 
-        {/* Desktop Navigation */}
-        <nav className="hidden md:block">
-          <ul className="flex items-center gap-2 text-gray-100 [&>li>a]:hover:text-rose-500 [&>li>a]:transition-colors [&>li>a]:duration-200 [&>li>a]:bg-rose-900 [&>li>a]:p-2 [&>li>a]:rounded-md">
-            <li>
-              <Link href="/">Home</Link>
-            </li>
-            <li>
-              <Link href="/regels">Regels</Link>
-            </li>
-            <li>
-              <Link href="/corvee">Corvee</Link>
-            </li>
-            <li>
-              <Link href="/boetes">Boetes</Link>
-            </li>
-            <li>
-              <Link href="/stats">Teamlijst en statistieken</Link>
-            </li>
-          </ul>
-        </nav>
-
-        {/* Desktop Sign In Button */}
-        <div className="hidden md:block">
-          <SignInButton />
-        </div>
-
-        {/* Mobile Hamburger Button */}
         <button
-          onClick={toggleMenu}
-          className="md:hidden text-gray-100 hover:text-rose-500 transition-colors duration-200 p-2"
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          className="text-gray-100 hover:text-rose-500 transition-colors p-2 shrink-0"
           aria-label="Toggle menu"
         >
           <svg
@@ -81,65 +43,29 @@ export default function Header() {
         </button>
       </div>
 
-      {/* Mobile Navigation Menu */}
       {isMenuOpen && (
-        <div className="md:hidden mt-4 bg-gray-800 rounded-lg shadow-lg border border-gray-700">
+        <div className="border-t border-gray-800 bg-gray-900">
           <nav className="p-4">
-            <ul className="space-y-3">
-              <li>
-                <Link 
-                  href="/" 
-                  onClick={closeMenu}
-                  className="block text-gray-100 hover:text-rose-500 transition-colors duration-200 py-2 px-3 rounded hover:bg-gray-700"
-                >
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  href="/regels" 
-                  onClick={closeMenu}
-                  className="block text-gray-100 hover:text-rose-500 transition-colors duration-200 py-2 px-3 rounded hover:bg-gray-700"
-                >
-                  Regels
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  href="/corvee" 
-                  onClick={closeMenu}
-                  className="block text-gray-100 hover:text-rose-500 transition-colors duration-200 py-2 px-3 rounded hover:bg-gray-700"
-                >
-                  Corvee
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  href="/boetes" 
-                  onClick={closeMenu}
-                  className="block text-gray-100 hover:text-rose-500 transition-colors duration-200 py-2 px-3 rounded hover:bg-gray-700"
-                >
-                  Boetes
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  href="/stats" 
-                  onClick={closeMenu}
-                  className="block text-gray-100 hover:text-rose-500 transition-colors duration-200 py-2 px-3 rounded hover:bg-gray-700"
-                >
-                  Teamlijst en statistieken
-                </Link>
-              </li>
+            <ul className="space-y-1">
+              {NAV_LINKS.map(({ href, label }) => (
+                <li key={href}>
+                  <Link
+                    href={href}
+                    onClick={closeMenu}
+                    className="block text-gray-100 hover:text-rose-300 hover:bg-gray-800 transition-colors py-2.5 px-3 rounded-md text-sm font-medium"
+                  >
+                    {label}
+                  </Link>
+                </li>
+              ))}
             </ul>
-            
-            {/* Mobile Sign In Button */}
+
             <div className="mt-4 pt-4 border-t border-gray-700">
               <SignInButton />
             </div>
           </nav>
         </div>
       )}
-    </div>
+    </header>
   )
 }

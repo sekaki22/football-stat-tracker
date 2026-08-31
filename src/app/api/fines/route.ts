@@ -6,6 +6,7 @@ import { withUserAuth, withAdminAuth } from '@/lib/middleware'
 export async function GET(request: NextRequest) {
     try {
         const fines = await prisma.fine.findMany({
+            where: { active: true },
             include: {
                 player: true,
                 fineInfo: true
@@ -72,7 +73,8 @@ export async function POST(request: NextRequest) {
                 data: {
                     player_id: player_id,
                     fine_type_id: fine_type_id,
-                    fine_amount: finalAmount
+                    fine_amount: finalAmount,
+                    active: true,
                 },
                 include: {
                     player: true,

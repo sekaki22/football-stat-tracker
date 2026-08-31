@@ -62,7 +62,7 @@ export default function SeasonWrapper({ initialPlayers }: SeasonWrapperProps) {
     <>
       <SeasonTabs currentSeason={currentSeason} onSeasonChange={handleSeasonChange} />
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 gap-8">
         <div>
           <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Spelerslijst</h2>
           <PlayerList 
@@ -105,7 +105,13 @@ export default function SeasonWrapper({ initialPlayers }: SeasonWrapperProps) {
         onClose={() => setShowAddPlayerModal(false)}
         title="Speler toevoegen"
       >
-        <AddPlayerForm onAdded={() => setShowAddPlayerModal(false)} />
+        <AddPlayerForm
+          season={currentSeason}
+          onAdded={() => {
+            handleStatAdded()
+            setShowAddPlayerModal(false)
+          }}
+        />
       </Modal>
 
       <Modal

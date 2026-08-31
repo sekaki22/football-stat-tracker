@@ -8,17 +8,31 @@ datasource db {
 }
 
 model Player {
-  id          Int           @id @default(autoincrement())
-  name        String        @unique
-  goals       Int           @default(0)
-  assists     Int           @default(0)
-  season      String        @default("24/25")
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  userId      String?       @unique
-  Fine        Fine[]
-  user        User?         @relation(fields: [userId], references: [id])
-  seasonStats SeasonStats[]
+  id            Int            @id @default(autoincrement())
+  name          String         @unique
+  nickname      String?
+  goals         Int            @default(0)
+  assists       Int            @default(0)
+  season        String         @default("24/25")
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  userId        String?        @unique
+  Fine          Fine[]
+  user          User?          @relation(fields: [userId], references: [id])
+  seasonStats   SeasonStats[]
+  seasonPlayers SeasonPlayer[]
+  corveeTeams   CorveeTeams[]
+}
+
+model SeasonPlayer {
+  id        Int      @id @default(autoincrement())
+  playerId  Int
+  season    String
+  createdAt DateTime @default(now())
+  player    Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@unique([playerId, season])
+  @@index([season])
 }
 
 model SeasonStats {
@@ -76,15 +90,16 @@ model FineInformation {
 }
 
 model Fine {
-  id           Int             @id @default(autoincrement())
-  fine_type_id  Int 
-  fine_amount   Int             @default(0) 
-  fine_amount_repaid Int       @default(0) 
-  player_id    Int
-  createdAt    DateTime        @default(now())
-  updatedAt    DateTime        @updatedAt
-  player       Player          @relation(fields: [player_id], references: [id], onDelete: Cascade)
-  fineInfo     FineInformation @relation(fields: [fine_type_id], references: [id], onDelete: Cascade)
+  id                 Int             @id @default(autoincrement())
+  fine_type_id       Int
+  fine_amount        Int             @default(0)
+  fine_amount_repaid Int             @default(0)
+  active             Boolean         @default(true)
+  player_id          Int
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  player             Player          @relation(fields: [player_id], references: [id], onDelete: Cascade)
+  fineInfo           FineInformation @relation(fields: [fine_type_id], references: [id], onDelete: Cascade)
 
   @@map("Fines")
 }
@@ -106,12 +121,16 @@ model VerificationToken {
 }
 
 model CorveeTeams {
-  id              Int      @id @default(autoincrement())
-  season          String
-  team_letter     String
-  player_nickname String
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id          Int      @id @default(autoincrement())
+  season      String
+  team_letter String
+  playerId    Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  player      Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@unique([season, team_letter, playerId])
+  @@index([season, team_letter])
 }
 
 model CorveePlanning {
@@ -122,4 +141,27 @@ model CorveePlanning {
   week        Int
   createdAt   DateTime @default(now())
   updatedAt   DateTime @default(now()) @updatedAt
+}
+
+model GalleryAlbum {
+  id          Int            @id @default(autoincrement())
+  title       String?
+  description String?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  photos      GalleryPhoto[]
+}
+
+model GalleryPhoto {
+  id           Int          @id @default(autoincrement())
+  albumId      Int
+  filename     String
+  originalName String?
+  description  String?
+  sortOrder    Int          @default(0)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  album        GalleryAlbum @relation(fields: [albumId], references: [id], onDelete: Cascade)
+
+  @@index([albumId])
 }
