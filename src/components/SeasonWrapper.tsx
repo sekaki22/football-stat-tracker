@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Player } from '@prisma/client'
 import PlayerList from './PlayerList'
 import PlayerStats from './PlayerStats'
@@ -13,11 +13,12 @@ import { useSession } from 'next-auth/react'
 
 interface SeasonWrapperProps {
   initialPlayers: Player[]
+  initialSeason: string
 }
 
-export default function SeasonWrapper({ initialPlayers }: SeasonWrapperProps) {
+export default function SeasonWrapper({ initialPlayers, initialSeason }: SeasonWrapperProps) {
   const { data: session } = useSession()
-  const [currentSeason, setCurrentSeason] = useState('25/26')
+  const [currentSeason, setCurrentSeason] = useState(initialSeason)
   const [players, setPlayers] = useState(initialPlayers)
   
   const [showAddPlayerModal, setShowAddPlayerModal] = useState(false)
@@ -28,7 +29,7 @@ export default function SeasonWrapper({ initialPlayers }: SeasonWrapperProps) {
     setCurrentSeason(season)
     
     try {
-      const response = await fetch(`/api/players?season=${season}`, { cache: 'no-store' })
+      const response = await fetch(`/api/players?season=${encodeURIComponent(season)}`, { cache: 'no-store' })
       if (response.ok) {
         const seasonPlayers = await response.json()
         setPlayers(seasonPlayers)
@@ -41,7 +42,7 @@ export default function SeasonWrapper({ initialPlayers }: SeasonWrapperProps) {
   const handleStatAdded = async () => {
     // Refresh the current season data
     try {
-      const response = await fetch(`/api/players?season=${currentSeason}`, { cache: 'no-store' })
+      const response = await fetch(`/api/players?season=${encodeURIComponent(currentSeason)}`, { cache: 'no-store' })
       if (response.ok) {
         const seasonPlayers = await response.json()
         setPlayers(seasonPlayers)
@@ -50,13 +51,6 @@ export default function SeasonWrapper({ initialPlayers }: SeasonWrapperProps) {
       console.error('Error refreshing season data:', error)
     }
   }
-
-  // Fetch players for the default season on initial mount
-  useEffect(() => {
-    // Ensure the first render reflects the selected default season
-    handleSeasonChange(currentSeason)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   return (
     <>

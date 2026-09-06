@@ -1,18 +1,13 @@
-import { prisma } from '@/lib/prisma'
 import SeasonWrapper from '@/components/SeasonWrapper'
+import { SeasonService } from '@/lib/services/seasonService'
 
 export default async function Home() {
-  // Get all players for initial load (24/25 season)
-  const players = await prisma.player.findMany({
-    orderBy: {
-      goals: 'desc',
-    },
-  })
+  const latestSeason = (await SeasonService.getLatestSeason()) ?? '25/26'
+  const players = await SeasonService.getPlayersBySeason(latestSeason)
 
   return (
     <main className="min-h-screen p-8">
-      
-      <SeasonWrapper initialPlayers={players} />
+      <SeasonWrapper initialPlayers={players} initialSeason={latestSeason} />
     </main>
   )
 }

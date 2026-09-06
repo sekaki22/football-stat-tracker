@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma"
 import AdminFineSection from "@/components/AdminFineSection"
 import Link from "next/link";       
 import PlayerFineTable from "@/components/PlayerFineTable";
+import { SeasonService } from "@/lib/services/seasonService";
 
 export default async function BoetesPage() {
     // Fetch all fines with related data (exclude repayments where fine_amount = 0)
@@ -22,12 +23,12 @@ export default async function BoetesPage() {
 
 
 
-    // Always fetch players and fine types for the client component to handle
-    const players = await prisma.player.findMany({
-        orderBy: {
-            name: 'asc'
-        }
-    })
+    // Only players on the current (latest) season roster can receive fines
+    const currentSeason = await SeasonService.getLatestSeason()
+    const seasonPlayers = currentSeason
+        ? await SeasonService.getPlayersBySeason(currentSeason)
+        : []
+    const players = [...seasonPlayers].sort((a, b) => a.name.localeCompare(b.name))
 
     const fineTypes = await prisma.fineInformation.findMany({
         orderBy: {

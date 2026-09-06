@@ -11,7 +11,9 @@ interface SeasonTabsProps {
 
 export default function SeasonTabs({ currentSeason, onSeasonChange }: SeasonTabsProps) {
   const { data: session } = useSession()
-  const [seasons, setSeasons] = useState<string[]>(['24/25', '25/26'])
+  const [seasons, setSeasons] = useState<string[]>(() =>
+    [...new Set(['24/25', '25/26', currentSeason])].sort()
+  )
   const [showWizard, setShowWizard] = useState(false)
 
   useEffect(() => {
@@ -20,7 +22,7 @@ export default function SeasonTabs({ currentSeason, onSeasonChange }: SeasonTabs
         const response = await fetch('/api/seasons')
         if (response.ok) {
           const availableSeasons = await response.json()
-          const allSeasons = [...new Set([...availableSeasons, '24/25', '25/26'])]
+          const allSeasons = [...new Set([...availableSeasons, '24/25', '25/26', currentSeason])]
           setSeasons(allSeasons.sort())
         }
       } catch (error) {
@@ -29,7 +31,7 @@ export default function SeasonTabs({ currentSeason, onSeasonChange }: SeasonTabs
     }
 
     fetchSeasons()
-  }, [])
+  }, [currentSeason])
 
   const handleSeasonCreated = (season: string) => {
     setSeasons((prev) => [...new Set([...prev, season])].sort())

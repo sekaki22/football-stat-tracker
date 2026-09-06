@@ -43,6 +43,11 @@ export class SeasonService {
     return Array.from(seasons).sort()
   }
 
+  static async getLatestSeason(): Promise<string | null> {
+    const seasons = await this.getAvailableSeasons()
+    return seasons.at(-1) ?? null
+  }
+
   static async getPlayersBySeason(season: string): Promise<Player[]> {
     const seasonPlayers = await prisma.seasonPlayer.findMany({
       where: { season },
