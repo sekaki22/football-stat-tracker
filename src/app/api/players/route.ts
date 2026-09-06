@@ -30,7 +30,31 @@ export async function GET(request: Request) {
 export async function POST(request: NextRequest) {
   return withAdminAuth(request, async () => {
   try {
-    const { name, goals, assists, season, nickname } = await request.json()
+    const { name, goals, assists, season, nickname, playerId } = await request.json()
+    const { SeasonService } = await import('@/lib/services/seasonService')
+
+    // Attach an existing player to a season roster
+    if (playerId != null) {
+      if (!season) {
+        return NextResponse.json(
+          { error: 'Season is required when adding an existing player' },
+          { status: 400 }
+        )
+      }
+
+      const parsedId = typeof playerId === 'number' ? playerId : parseInt(playerId, 10)
+      if (isNaN(parsedId)) {
+        return NextResponse.json({ error: 'Invalid player ID' }, { status: 400 })
+      }
+
+      const existing = await PlayerService.getPlayerById(parsedId)
+      if (!existing) {
+        return NextResponse.json({ error: 'Player not found' }, { status: 404 })
+      }
+
+      await SeasonService.addPlayerToSeason(parsedId, season)
+      return NextResponse.json(existing)
+    }
 
     if (!name) {
       return NextResponse.json(
@@ -47,7 +71,6 @@ export async function POST(request: NextRequest) {
     )
 
     if (season) {
-      const { SeasonService } = await import('@/lib/services/seasonService')
       await SeasonService.addPlayerToSeason(player.id, season)
     }
 
