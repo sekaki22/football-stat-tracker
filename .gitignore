@@ -56,4 +56,8 @@ data/
 
 logs/
 
+#databases
+prisma/data/dev.db
+data/dev.db
+
 
