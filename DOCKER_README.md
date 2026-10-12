@@ -150,9 +150,21 @@ docker compose up --build
 ```
 
 ### Doing a new deployment to the app
-In order to deploy new changes to the app run followig command
 
-```bash 
+From this machine, deploy `main` to the VPS over SSH (Tailscale host `vps-ubuntu`):
+
+```bash
+./scripts/deploy.sh              # push, pull, rebuild app
+./scripts/deploy.sh --migrate    # same, plus prisma migrate deploy
+./scripts/deploy.sh --skip-push  # already pushed; only pull and rebuild
+./scripts/deploy.sh --dry-run    # print commands without changing anything
+```
+
+The script prompts once for the SSH password, then reuses that session. Logs are written to `logs/deploy-<timestamp>/` even if the deploy fails (`deploy.log`, `remote-session.log`, `app.log`, `nginx.log`).
+
+On the VPS itself you can still deploy manually:
+
+```bash
 docker-compose up -d --build app
 ```
 
