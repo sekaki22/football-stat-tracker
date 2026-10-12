@@ -30,18 +30,21 @@ RUN apk add --no-cache sqlite
 WORKDIR /app
 
 # Copy only the built files and package files
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/content ./content
+COPY --from=builder --chown=node:node /app/package*.json ./
+COPY --from=builder --chown=node:node /app/.next ./.next
+COPY --from=builder --chown=node:node /app/public ./public
+COPY --from=builder --chown=node:node /app/node_modules ./node_modules
+COPY --from=builder --chown=node:node /app/prisma ./prisma
+COPY --from=builder --chown=node:node /app/content ./content
+
+# SQLite volume mount point; host ./data overlays this at runtime
+RUN mkdir -p /app/data && chown node:node /app/data
 
 # Verify runtime image has schema for migrate deploy
 RUN test -f prisma/schema.prisma
 
-# Expose port your app runs on
 EXPOSE 3000
 
-# Run the production start command
+USER node
+
 CMD ["npm", "start"]

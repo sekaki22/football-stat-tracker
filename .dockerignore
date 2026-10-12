@@ -19,7 +19,8 @@ enable-ssl.sh
 data
 prisma/data
 
-# Local-only env files (keep .env for Docker Compose)
+# Env files — Compose injects .env at runtime; do not bake secrets into the image
+.env
 .env.local
 .env.development
 .env.test
